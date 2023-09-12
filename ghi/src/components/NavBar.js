@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
-import { Navbar, Nav, Col } from "react-bootstrap";
+import { Navbar, Nav } from "react-bootstrap";
 import { HashLink } from 'react-router-hash-link';
-import {
-BrowserRouter as Router
-} from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
+import logo from "../assets/img/logo.png";
 
 export const NavBar = () => {
-
 const [activeLink, setActiveLink] = useState('home');
 const [scrolled, setScrolled] = useState(false);
 
@@ -17,31 +15,35 @@ useEffect(() => {
     } else {
         setScrolled(false);
     }
-    }
+    };
 
     window.addEventListener("scroll", onScroll);
 
     return () => window.removeEventListener("scroll", onScroll);
-}, [])
+}, []);
 
 const onUpdateActiveLink = (value) => {
     setActiveLink(value);
-}
+};
 
 return (
     <>
-    <Navbar bg="dark" data-bs-theme="dark">
-            <Col xs={12} md={6} >
-            <Navbar.Brand href="/"></Navbar.Brand>
-            <Nav className="me-auto">
-                <Nav.Link href="#home">Home</Nav.Link>
-                <Nav.Link href="#features">Features</Nav.Link>
-                <Nav.Link href="#pricing">About</Nav.Link>
-                <Nav.Link href="#pricing">Donate</Nav.Link>
-            </Nav>
-            </Col>
+    <Navbar bg="dark" expand="lg" data-bs-theme="dark">
+        <Navbar.Brand href="/">
+        <img className="navbar-logo" src={logo} alt="logo" />
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+        <Nav className="me-auto">
+            <Nav.Link href="#home">Home</Nav.Link>
+            <Nav.Link href="#features">How it works</Nav.Link>
+            <Nav.Link href="#pricing">About</Nav.Link>
+            <Nav.Link href="#donate">Donate</Nav.Link>
+        </Nav>
+        </Navbar.Collapse>
     </Navbar>
     <br />
     </>
 );
-}
+};
+

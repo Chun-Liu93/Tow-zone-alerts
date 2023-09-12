@@ -36,3 +36,25 @@
     transform: rotate(360deg);
   }
 }
+
+/************ Navbar Css ************/
+.navbar-logo{
+  height: 80px;
+  width: 80px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+span.navbar-text {
+  display: flex;
+  align-items: center;
+}
+
+nav.navbar {
+  font-weight: 400;
+  color: #fff !important;
+  letter-spacing: 0.8px;
+  padding: 0 25px;
+  font-size: 20px;
+  opacity: 0.75;
+}
