@@ -1,13 +1,13 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Referral } from "./components/Referral";
-import { NavBar } from "./components/NavBar"; // Updated the import statement
+import ReferralSignupForm, { Referral } from "./components/Referral";
+import { NavBar } from "./components/NavBar";
 
 function App() {
   return (
     <div className="App">
-      <NavBar /> {/* Updated component name to NavBar */}
-      <Referral />
+      <NavBar /> 
+      <ReferralSignupForm />
     </div>
   );
 }
