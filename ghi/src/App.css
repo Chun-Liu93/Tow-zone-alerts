@@ -25,6 +25,15 @@ nav.navbar {
 /************ Referral Css ************/
 
 /* Custom CSS */
+.form-control {
+  width: 100%; /* You can adjust the width as needed */
+}
+
+/* Custom CSS */
 .form-control:focus {
-  background-color: #f0f0f0;
+  background-color: #000000;
+}
+
+.form-control {
+  width: 100% !important; /* Add !important */
 }

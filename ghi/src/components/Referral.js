@@ -4,10 +4,15 @@ import axios from "axios";
 
 function ReferralSignupForm() {
     const [phoneNumber, setPhoneNumber] = useState("");
+    const [city, setCity] = useState("");
+    const [otherInputForCity, setOtherInputForCity] = useState(false);
     const [address, setAddress] = useState("");
     const [licensePlate, setLicensePlate] = useState("");
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
+    const [howDidYouHear, setHowDidYouHear] = useState("");
+    const [otherInputForHowDidYouHear, setOtherInputForHowDidYouHear] = useState(false);
+    const [otherSource, setOtherSource] = useState("");
 
 
     const handleRegistration = (e) => {
@@ -31,10 +36,31 @@ function ReferralSignupForm() {
         .then((data) => {
             console.log(data);
         });
+    };
+
+    const handleCityChange =(e) => {
+        const selectedValue = e.target.value;
+        setCity(selectedValue);
+        if (selectedValue === "Other") {
+            setOtherInputForCity(true);
+        } else {
+            setOtherInputForCity(false);
+        }
+
     }
 
+    const handleHowDidYouHearChange = (e) => {
+        const selectedValue = e.target.value;
+        setHowDidYouHear(selectedValue);
+        if (selectedValue === "Other") {
+            setOtherInputForHowDidYouHear(true);
+        } else {
+            setOtherInputForHowDidYouHear(false);
+        }
+    };
+
     return (
-        <section className="info" id="connect">
+    <section className="info" id="connect">
         <Container>
             <h1>Tow Zone Alerts (TZA) Sign Up Form</h1>
             <p>
@@ -49,122 +75,141 @@ function ReferralSignupForm() {
             <br />
             Check out our website towzonealerts.com and our backstory.
             </p>
-            <Row>
-        <Col xs={12} sm={6}>
-            <form onSubmit={handleRegistration}>
-                <div className="form-group">
-                    <label htmlFor="phoneNumber">Phone Number:</label>
-                    <input
-                    type="text"
-                    className="form-control"
-                    id="phoneNumber"
-                    name="phoneNumber"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="address">Location where you normally park:</label>
-                    <input
-                    type="text"
-                    className="form-control"
-                    id="address"
-                    name="address"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="city">City:</label>
-                    <select className="form-control" id="city">
-                    <option value="boston">Boston</option>
-                    <option value="cambridge">Cambridge</option>
-                    <option value="somerville">Somerville</option>
-                    </select>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="licensePlate">License Number:</label>
-                    <input
-                    type="text"
-                    className="form-control"
-                    id="licensePlate"
-                    name="licensePlate"
-                    value={licensePlate}
-                    onChange={(e) => setLicensePlate(e.target.value)}
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="email">Email (optional):</label>
-                    <input
-                    type="text"
-                    className="form-control"
-                    id="email"
-                    name="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="name">Name (optional):</label>
-                    <input
-                    type="text"
-                    className="form-control"
-                    id="name"
-                    name="name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    />
-                </div>
-            </form>
-        </Col>
-        <Col xs={12} sm={6}>
-            <form>
-                <div className="form-group">
-                    <label htmlFor="license">
-                    License Number:
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="license"
-                        name="licensePlate"
-                        value={licensePlate}
-                        onChange={(e) => setLicensePlate(e.target.value)}
-                    />
-                    </label>
-                </div>
-                <br />
-                <div className="form-group">
-                    <label>
-                    Email (optional):
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="email"
-                        name="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                    </label>
-                </div>
-                <br />
-                <div className="form-group">
-                    <label>
-                    Name (optional):
-                    <input
-                        type="text"
-                        className="form-control"
-                        name="name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                    </label>
-                </div>
-                <br />
-                <button type="submit" className="btn btn-primary">Sign Up</button>
-            </form>
-        </Col>
-        </Row>
-    </Container>
+            <Row className="row-equal-height">
+                <Col xs={6} sm={6}>
+                    <form onSubmit={handleRegistration}>
+                        <div className="form-group">
+                            <label htmlFor="phoneNumber">Phone Number:</label>
+                            <input
+                            type="text"
+                            className="form-control"
+                            id="phoneNumber"
+                            name="phoneNumber"
+                            value={phoneNumber}
+                            onChange={(e) => setPhoneNumber(e.target.value)}
+                            />
+                        </div>
+                        <div className="form-group">
+                        <label htmlFor="city">City:</label>
+                            <select
+                            className="form-control"
+                            id="city"
+                            value={city}
+                            onChange={handleCityChange}
+                            >
+                            <option value="">Select an option</option>
+                            <option value="boston">Boston</option>
+                            <option value="cambridge">Cambridge</option>
+                            <option value="somerville">Somerville</option>
+                            <option value="Other">Other:</option>
+                            </select>
+                        {otherInputForCity && (
+                        <div className="form-group">
+                            <label>Other Source:</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="otherSource"
+                                value={otherSource}
+                                onChange={(e) => setOtherSource(e.target.value)}
+                            />
+                            </div>
+                        )}
+                        </div>
+                        <br />
+                        <div className="form-group">
+                            <label htmlFor="address">Location where you normally park:</label>
+                            <input
+                            type="text"
+                            className="form-control"
+                            id="address"
+                            name="address"
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
+                            />
+                        </div>
+                    </form>
+                </Col>
+                <Col xs={6} sm={6}>
+                    <form>
+                        <div className="form-group">
+                            <label htmlFor="licensePlate"></label>
+                            License Number:
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="license"
+                                name="licensePlate"
+                                value={licensePlate}
+                                onChange={(e) => setLicensePlate(e.target.value)}
+                            />
+                        </div>
+                        <br />
+                    <form>
+                        <div className="form-group">
+                            <label htmlFor="howDidYouHear">How did you hear about us:</label>
+                            <select
+                                className="form-control"
+                                id="howDidYouHear"
+                                value={howDidYouHear} 
+                                onChange={handleHowDidYouHearChange} 
+                            >
+                                <option value="">Select an option</option> 
+                                <option value="Realtor/Real Estate Agent">Real Estate</option>
+                                <option value="Facebook">Facebook</option>
+                                <option value="Alumni Email">Alumni Email</option>
+                                <option value="Flier">Fliers</option>
+                                <option value="Boston Global Article">Boston Global Article</option>
+                                <option value="Channel 7 News">Channel 7 News</option>
+                                <option value="Other">Other:</option>
+                            </select>
+                        </div>
+                    </form>
+                        {otherInputForHowDidYouHear && (
+                        <div className="form-group">
+                            <label>Other Source:</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="otherSource"
+                                value={otherSource}
+                                onChange={(e) => setOtherSource(e.target.value)}
+                            />
+                            </div>
+                        )}
+                        <br />
+                        <div className="form-group">
+                            <label>
+                            Email (optional):
+                            </label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="email"
+                                name="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </div>
+                        <br />
+                        <div className="form-group">
+                            <label>
+                            Name (optional):
+                            </label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="name"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                            />
+                        </div>
+                        <br />
+                        <button type="submit" className="btn btn-primary">Sign Up</button>
+                    </form>
+                </Col>
+            </Row>
+        </Container>
     </section>
 );
 }
