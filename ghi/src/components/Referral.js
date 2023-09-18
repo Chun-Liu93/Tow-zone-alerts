@@ -60,7 +60,7 @@ function ReferralSignupForm() {
     };
 
     return (
-    <section className="info" id="connect">
+    <section className="body-container" id="connect">
         <Container>
             <h1>Tow Zone Alerts (TZA) Sign Up Form</h1>
             <p>
@@ -89,6 +89,7 @@ function ReferralSignupForm() {
                             onChange={(e) => setPhoneNumber(e.target.value)}
                             />
                         </div>
+                        <br />
                         <div className="form-group">
                         <label htmlFor="city">City:</label>
                             <select
@@ -145,7 +146,6 @@ function ReferralSignupForm() {
                             />
                         </div>
                         <br />
-                    <form>
                         <div className="form-group">
                             <label htmlFor="howDidYouHear">How did you hear about us:</label>
                             <select
@@ -164,7 +164,6 @@ function ReferralSignupForm() {
                                 <option value="Other">Other:</option>
                             </select>
                         </div>
-                    </form>
                         {otherInputForHowDidYouHear && (
                         <div className="form-group">
                             <label>Other Source:</label>
@@ -175,7 +174,7 @@ function ReferralSignupForm() {
                                 value={otherSource}
                                 onChange={(e) => setOtherSource(e.target.value)}
                             />
-                            </div>
+                        </div>
                         )}
                         <br />
                         <div className="form-group">
