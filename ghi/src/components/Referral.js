@@ -10,13 +10,36 @@ function ReferralSignupForm() {
     const [licensePlate, setLicensePlate] = useState("");
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
+    const [referee, setReferee] = useState("");
     const [howDidYouHear, setHowDidYouHear] = useState("");
     const [otherInputForHowDidYouHear, setOtherInputForHowDidYouHear] = useState(false);
-    const [otherSource, setOtherSource] = useState("");
+    const [otherSource1, setOtherSource1] = useState("");
+    const [otherSource2, setOtherSource2] = useState("");
+    const [isValidNumber, setIsValidNumber] = useState(true);
+    const [isValidEmail, setIsValidEmail] = useState(true);
+    const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+    // const [errorMessage, setErrorMessage] = useState(null);
+    // const [successMessage, setSuccessMessage] = useState('');
 
 
-    const handleRegistration = (e) => {
+    const handleSignUp = (e) => {
         e.preventDefault();
+        setIsFormSubmitted(true);
+        // if(!formState.phoneNumber || !formState.city || !formState.address || !formState.licensePlate)
+        //     setErrorMessage('All required fields must be filled out.');
+        // } else {
+        //     setErrorMessage(null);
+        //     setButtonText('Sending...')
+        //     const 
+        // }
+
+        if(!isValidNumber) {
+            return;
+        }
+        if(!isValidEmail) {
+            return;
+        }    
+        
         const accountData = {
         phoneNumber,
         address,
@@ -38,6 +61,16 @@ function ReferralSignupForm() {
         });
     };
 
+    const validateNumber = (input) => {
+        const phoneValidation = /^[0-9]{10}$/;
+        return phoneValidation.test(input);
+    }
+
+    const validateEmail = (email) => {
+        const emailValidation = /^[^\s@]+@[^\s@]+\.(com|net|org|edu|gov|mil|co\.uk|io|ai|us)$/i;
+        return emailValidation.test(email);
+        };
+
     const handleCityChange =(e) => {
         const selectedValue = e.target.value;
         setCity(selectedValue);
@@ -46,9 +79,8 @@ function ReferralSignupForm() {
         } else {
             setOtherInputForCity(false);
         }
-
     }
-
+    
     const handleHowDidYouHearChange = (e) => {
         const selectedValue = e.target.value;
         setHowDidYouHear(selectedValue);
@@ -77,7 +109,7 @@ function ReferralSignupForm() {
             </p>
             <Row className="row-equal-height">
                 <Col xs={6} sm={6}>
-                    <form onSubmit={handleRegistration}>
+                    <form onSubmit={handleSignUp}>
                         <div className="form-group">
                             <label htmlFor="phoneNumber">Phone Number:</label>
                             <input
@@ -110,9 +142,9 @@ function ReferralSignupForm() {
                             <input
                                 type="text"
                                 className="form-control"
-                                id="otherSource"
-                                value={otherSource}
-                                onChange={(e) => setOtherSource(e.target.value)}
+                                id="otherSource1"
+                                value={otherSource1}
+                                onChange={(e) => setOtherSource1(e.target.value)}
                             />
                             </div>
                         )}
@@ -170,9 +202,9 @@ function ReferralSignupForm() {
                             <input
                                 type="text"
                                 className="form-control"
-                                id="otherSource"
-                                value={otherSource}
-                                onChange={(e) => setOtherSource(e.target.value)}
+                                id="otherSource2"
+                                value={otherSource2}
+                                onChange={(e) => setOtherSource2(e.target.value)}
                             />
                         </div>
                         )}
@@ -201,6 +233,19 @@ function ReferralSignupForm() {
                                 name="name"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
+                            />
+                        </div>
+                        <br />
+                        <div className="form-group">
+                            <label>
+                            Referee (optional):
+                            </label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="referee"
+                                value={referee}
+                                onChange={(e) => setReferee(e.target.value)}
                             />
                         </div>
                         <br />

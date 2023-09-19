@@ -1,6 +1,5 @@
 
 /************ Navbar Css ************/
-
 .navbar-logo{
   height: 80px;
   width: 80px;
@@ -28,7 +27,7 @@ nav.navbar {
 
 .body-container {
   box-shadow: 4px;
-  background-color: rgb(243, 243, 243);
+  background-color: var(--colors-snow);
 }
 
 /************* Footer Css *************/
@@ -38,7 +37,7 @@ nav.navbar {
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
-  background-color: rgb(195, 195, 195);
+  background-color: rgba(66, 153, 225, 0.6);
 }
 .footer img {
   width: 26%;
