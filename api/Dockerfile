@@ -18,7 +18,7 @@ COPY authenticator.py authenticator.py
 # COPY routers routers
 
 RUN python -m pip install -r requirements.txt
-
+RUN pip install sqlalchemy
 # !! PORT env var needs to match with exposed port in caprover dashboard
 
 

@@ -3,9 +3,11 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
 from jose import JWTError, jwt
 from passlib.context import CryptContext
+from routers import signup_routers
 
 # Initialize FastAPI app
 app = FastAPI()
+app.include_router(signup_routers.router)
 
 # Secret key to sign JWTs
 SECRET_KEY = "your-secret-key"
@@ -20,8 +22,8 @@ class User(BaseModel):
 # Sample user data (in a real app, you'd have a database)
 fake_users_db = {
     "testuser": {
-        "username": "testuser",
-        "password": "$2b$12$somehashedpassword",
+        "username": "artemis",
+        "password": "cliu093991",
     }
 }
 
