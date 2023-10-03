@@ -1,6 +1,6 @@
 # queries.signup_queries.py
 from sqlalchemy.orm import Session
-from models.signup_models import SignupForm
+from models.sqlalchemy_models import SignupForm
 
 
 def create_signup_form(db: Session, signup_form: SignupForm):

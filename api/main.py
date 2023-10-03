@@ -4,10 +4,21 @@ from pydantic import BaseModel
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from routers import signup_routers
+from fastapi.middleware.cors import CORSMiddleware
 
 # Initialize FastAPI app
 app = FastAPI()
 app.include_router(signup_routers.router)
+
+origins = ["http://localhost:3000"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Secret key to sign JWTs
 SECRET_KEY = "your-secret-key"
