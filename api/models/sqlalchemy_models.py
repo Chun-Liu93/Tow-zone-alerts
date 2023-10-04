@@ -7,7 +7,7 @@ Base = declarative_base()
 class SignupForm(Base):
     __tablename__ = "signup_form"
     id = Column(Integer, primary_key=True)
-    phone_number = Column(String, nullable=False)
+    phone_number = Column(Integer, nullable=False)
     city = Column(String, nullable=False)
     address = Column(String, nullable=False)
     license_plate = Column(String, nullable=True)
