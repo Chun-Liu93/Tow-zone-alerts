@@ -20,17 +20,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Secret key to sign JWTs
-SECRET_KEY = "your-secret-key"
+
+SECRET_KEY = "/"
 ALGORITHM = "HS256"
 
 
-# Create a Pydantic model for user credentials
 class User(BaseModel):
     username: str
 
 
-# Sample user data (in a real app, you'd have a database)
 fake_users_db = {
     "testuser": {
         "username": "artemis",
@@ -38,14 +36,13 @@ fake_users_db = {
     }
 }
 
-# Password hashing
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# OAuth2 password bearer
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-# Function to create a JWT token
 def create_jwt_token(data: dict):
     to_encode = data.copy()
     token = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
