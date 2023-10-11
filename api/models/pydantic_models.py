@@ -1,6 +1,9 @@
 from pydantic import BaseModel
 from typing import Optional, Union
 
+class FormError(BaseModel):
+    error: bool
+    message: str
 
 class SignupForm(BaseModel):
     id: Optional[int]

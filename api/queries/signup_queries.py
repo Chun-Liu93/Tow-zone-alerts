@@ -29,3 +29,7 @@ def create_signup_form(db: Session, signup_form: SignupForm):
         # Handle any database-related errors here
         db.rollback()
         raise e
+
+
+def get_signup_by_phone_number(db: Session, phone_number: str) -> SignupForm:
+    return db.query(SignupForm).filter(SignupForm.phone_number == phone_number).first()
