@@ -9,7 +9,7 @@ from typing import Union
 router = APIRouter()
 
 
-@router.post("/signup/", response_model=SignupForm)
+@router.post("/signup/", response_model=Union[SignupForm, FormError])
 def create_new_account(account_data: SignupForm, db: Session = Depends(get_db)):
     db_account = create_signup_form(db, account_data)
     print(db_account)
@@ -53,3 +53,6 @@ def get_signup(phone_number: str, db: Session = Depends(get_db)):
             "error": True,
             "message": "phone number should be a number"
         }
+    
+@router.patch("/signup/{phone_number}", response_model=Union[SignupForm, FormError])
+def update_signup():
