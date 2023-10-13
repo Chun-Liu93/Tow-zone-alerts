@@ -7,6 +7,7 @@ WORKDIR /app
 COPY requirements.txt requirements.txt
 COPY main.py main.py
 COPY migrations migrations
+COPY models models
 COPY queries queries
 COPY routers routers
 COPY unit_tests unit_tests
