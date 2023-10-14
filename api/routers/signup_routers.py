@@ -37,9 +37,10 @@ def valid_phone_number(phone_number: str):
 @router.get("/signup/{phone_number}", response_model=Union[SignupForm, FormError])
 async def get_signup(phone_number: str, db: Session = Depends(get_signup_get_async_db)):
     if valid_phone_number(phone_number):
-        signup_data = await get_signup_by_phone_number(db, phone_number)  # Await the asynchronous database operation
+        signup_data = await get_signup_get_async_db(phone_number=phone_number)
+        # signup_data = await get_signup_by_phone_number(db, phone_number)  # Await the asynchronous database operation
         if signup_data:
-            return signup_data.dict()
+            return signup_data
         else:
             return FormError(message="User not found")
     else:

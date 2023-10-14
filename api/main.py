@@ -5,6 +5,7 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from routers import signup_routers
 from fastapi.middleware.cors import CORSMiddleware
+from db.db import database
 
 # Initialize FastAPI app
 app = FastAPI()
@@ -19,6 +20,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+async def startup():
+    await database.connect()
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    await database.disconnect()
 
 
 SECRET_KEY = "/"
