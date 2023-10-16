@@ -33,3 +33,18 @@ def create_signup_form(db: Session, signup_form: SignupForm):
 
 def get_signup_by_phone_number(db: Session, phone_number: str) -> SignupForm:
     return db.query(SignupForm).filter(SignupForm.phone_number == phone_number).first()
+
+
+def update_signup_form(db: Session, phone_number: str, updated_data: SignupForm) -> SignupForm:
+    current_user = db.query(SignupForm).filter(SignupForm.phone_number == phone_number).first()
+    if current_user:
+        for field, value in updated_data.dict().items():
+            setattr(current_user, field, value)
+        try:
+            db.commit()
+            db.refresh(current_user)
+            return current_user
+        except Exception as e:
+            db.rollback()
+            raise e
+    return None
