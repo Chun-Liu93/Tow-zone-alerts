@@ -1,11 +1,11 @@
 # queries.signup_queries.py
 from sqlalchemy.orm import Session
-from models.sqlalchemy_models import SignupForm
+from models.sqlalchemy_models import SqlAlchemySignupForm
 
 
-def create_signup_form(db: Session, signup_form: SignupForm):
+def create_signup_form(db: Session, signup_form: SqlAlchemySignupForm):
     # Create a new user instance and populate it with the provided data
-    new_user = SignupForm(
+    new_user = SqlAlchemySignupForm(
         id=signup_form.id,
         phone_number=signup_form.phone_number,
         city=signup_form.city,
@@ -31,20 +31,36 @@ def create_signup_form(db: Session, signup_form: SignupForm):
         raise e
 
 
-def get_signup_by_phone_number(db: Session, phone_number: str) -> SignupForm:
-    return db.query(SignupForm).filter(SignupForm.phone_number == phone_number).first()
+def get_signup_by_phone_number(db: Session, phone_number: str) -> SqlAlchemySignupForm:
+    return db.query(SqlAlchemySignupForm).filter(SqlAlchemySignupForm.phone_number == phone_number).first()
 
 
-def update_signup_form(db: Session, phone_number: str, updated_data: SignupForm) -> SignupForm:
-    current_user = db.query(SignupForm).filter(SignupForm.phone_number == phone_number).first()
-    if current_user:
-        for field, value in updated_data.dict().items():
-            setattr(current_user, field, value)
+# def update_signup_form(db: Session, phone_number: str, updated_data: SignupForm) -> SignupForm:
+#     current_user = db.query(SignupForm).filter(SignupForm.phone_number == phone_number).first()
+#     if current_user:
+#         for field, value in updated_data.dict().items():
+#             setattr(current_user, field, value)
+#         try:
+#             db.commit()
+#             db.refresh(current_user)
+#             return current_user
+#         except Exception as e:
+#             db.rollback()
+#             raise e
+#     return None
+
+def update_user_data(db: Session, phone_number: str, updated_data: dict) -> SqlAlchemySignupForm:
+    user = db.query(SqlAlchemySignupForm).filter(SqlAlchemySignupForm.phone_number == phone_number).first()
+    if user:
+        for field, value in updated_data.items():
+            setattr(user, field, value)
+
         try:
             db.commit()
-            db.refresh(current_user)
-            return current_user
+            db.refresh(user)
+            return user
         except Exception as e:
             db.rollback()
             raise e
-    return None
+    else:
+        return None

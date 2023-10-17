@@ -1,9 +1,9 @@
 import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, select
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import sessionmaker
 import databases
-from models.sqlalchemy_models import SignupForm
+from models.sqlalchemy_models import SqlAlchemySignupForm
 
 
 load_dotenv()
@@ -30,5 +30,5 @@ def get_db():
 
 
 async def get_signup_get_async_db(phone_number: str):
-    query = select(SignupForm).where(SignupForm.phone_number == phone_number)
+    query = select(SqlAlchemySignupForm).where(SqlAlchemySignupForm.phone_number == phone_number)
     return await database.fetch_one(query)

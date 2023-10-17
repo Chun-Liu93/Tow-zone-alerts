@@ -25,7 +25,7 @@ class MultiType(TypeDecorator):
             return value
 
 
-class SignupForm(Base):
+class SqlAlchemySignupForm(Base):
     __tablename__ = "signup_form"
     id = Column(Integer, primary_key=True)
     phone_number = Column(Integer, nullable=False)
