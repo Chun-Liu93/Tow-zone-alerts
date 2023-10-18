@@ -35,26 +35,11 @@ def get_signup_by_phone_number(db: Session, phone_number: str) -> SqlAlchemySign
     return db.query(SqlAlchemySignupForm).filter(SqlAlchemySignupForm.phone_number == phone_number).first()
 
 
-# def update_signup_form(db: Session, phone_number: str, updated_data: SignupForm) -> SignupForm:
-#     current_user = db.query(SignupForm).filter(SignupForm.phone_number == phone_number).first()
-#     if current_user:
-#         for field, value in updated_data.dict().items():
-#             setattr(current_user, field, value)
-#         try:
-#             db.commit()
-#             db.refresh(current_user)
-#             return current_user
-#         except Exception as e:
-#             db.rollback()
-#             raise e
-#     return None
-
 def update_user_data(db: Session, phone_number: str, updated_data: dict) -> SqlAlchemySignupForm:
     user = db.query(SqlAlchemySignupForm).filter(SqlAlchemySignupForm.phone_number == phone_number).first()
     if user:
         for field, value in updated_data.items():
             setattr(user, field, value)
-
         try:
             db.commit()
             db.refresh(user)
@@ -64,3 +49,10 @@ def update_user_data(db: Session, phone_number: str, updated_data: dict) -> SqlA
             raise e
     else:
         return None
+
+
+def delete_signup_record(db: Session, id: int):
+    record_to_delete = db.query(SqlAlchemySignupForm).filter(SqlAlchemySignupForm.id == id).first()
+    if record_to_delete:
+        db.delete(record_to_delete)
+        db.commit()

@@ -1,15 +1,16 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from queries.signup_queries import create_signup_form
 from models.pydantic_models import PydanticSignupForm, FormError, Update_signup_form
 from models.sqlalchemy_models import SqlAlchemySignupForm
-from db.db import get_db, get_signup_get_async_db
+from db.db import get_db, get_signup_get_async_db, get_signup_by_id
 import re
 from typing import Union
 from sqlalchemy import update
 import logging
 
 router = APIRouter()
+
 
 @router.post("/signup/", response_model=Union[PydanticSignupForm, FormError])
 def create_new_account(account_data: PydanticSignupForm, db: Session = Depends(get_db)):
@@ -34,6 +35,15 @@ def valid_phone_number(phone_number: str):
     return True if res else False
 
 
+def delete_signup_record(db: Session, id: int):
+    db_account = db.query(SqlAlchemySignupForm).filter(SqlAlchemySignupForm.id == id).first()
+    if db_account:
+        db.delete(db_account)
+        db.commit()
+    else:
+        raise HTTPException(status_code=404, detail="Signup form not found")
+
+
 @router.get("/signup/{phone_number}", response_model=Union[PydanticSignupForm, FormError])
 async def get_signup(phone_number: str, db: Session = Depends(get_signup_get_async_db)):
     if valid_phone_number(phone_number):
@@ -44,6 +54,7 @@ async def get_signup(phone_number: str, db: Session = Depends(get_signup_get_asy
             return FormError(message="User not found")
     else:
         return FormError(message="Phone number should be a number")
+
 
 @router.patch("/signup/{phone_number}", response_model=Union[Update_signup_form, dict])
 async def update_signup_form(phone_number: str, user_data: Update_signup_form, db: Session = Depends(get_db)):
@@ -62,3 +73,12 @@ async def update_signup_form(phone_number: str, user_data: Update_signup_form, d
         logging.error(f'Error updating user: {str(e)}')
         db.rollback()
         return {"message": "Could not update the user"}
+
+
+@router.delete("/signup/{id}", response_model=None, status_code=204)
+async def delete_signup_form(id: int, db: Session = Depends(get_db)):
+    result = get_signup_by_id(db, id)
+    if result:
+        delete_signup_record(db, id)
+    else:
+        raise HTTPException(status_code=404, detail="Signup form not found")
