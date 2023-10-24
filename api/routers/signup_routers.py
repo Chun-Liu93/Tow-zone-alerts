@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from queries.signup_queries import create_signup_form
+from queries.signup_queries import create_signup_form, get_signup_id
 from models.pydantic_models import PydanticSignupForm, FormError, Update_signup_form
 from models.sqlalchemy_models import SqlAlchemySignupForm
 from db.db import get_db, get_signup_get_async_db, get_signup_by_id
@@ -35,6 +35,14 @@ def valid_phone_number(phone_number: str):
     return True if res else False
 
 
+# def id_signup(db: Session, id: int):
+#     db_id = db.query(SqlAlchemySignupForm).filter(SqlAlchemySignupForm.id == id).first()
+#     if db_id:
+#         return db_id
+#     else:
+#         raise HTTPException(status_code=404, detail="User not found")
+
+
 def delete_signup_record(db: Session, id: int):
     db_account = db.query(SqlAlchemySignupForm).filter(SqlAlchemySignupForm.id == id).first()
     if db_account:
@@ -54,6 +62,15 @@ async def get_signup(phone_number: str, db: Session = Depends(get_signup_get_asy
             return FormError(message="User not found")
     else:
         return FormError(message="Phone number should be a number")
+
+
+@router.get("/signup/{id}", response_model=Union[PydanticSignupForm, FormError])
+async def get_id(id: int, db: Session = Depends(get_db)):
+    result = await get_signup_id(db, id=id)
+    if result:
+        return result
+    else:
+        return FormError(message="User not found")
 
 
 @router.patch("/signup/{phone_number}", response_model=Union[Update_signup_form, dict])
