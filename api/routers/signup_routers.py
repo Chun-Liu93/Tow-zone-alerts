@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from queries.signup_queries import create_signup_form, get_signup_id
+from queries.signup_queries import create_signup_form
 from models.pydantic_models import PydanticSignupForm, FormError, Update_signup_form
 from models.sqlalchemy_models import SqlAlchemySignupForm
-from db.db import get_db, get_signup_get_async_db, get_signup_by_id
+from db.db import get_db, get_signup_get_async_db, get_signup_by_id, get_signup_by_id_async
 import re
+import logging
 from typing import Union
 from sqlalchemy import update
-import logging
 
 router = APIRouter()
 
@@ -35,10 +35,11 @@ def valid_phone_number(phone_number: str):
     return True if res else False
 
 
-def id_signup(db: Session, id: int):
-    db_id = db.query(SqlAlchemySignupForm).filter(SqlAlchemySignupForm.id == id).first()
-    if db_id:
-        return db_id
+# Retrieves and checks to see if id exists
+def id_exists(db, id: int):
+    signup_data = db.query(SqlAlchemySignupForm).filter(SqlAlchemySignupForm.id == id).first()
+    if signup_data:
+        return True
     else:
         raise HTTPException(status_code=404, detail="User not found")
 
@@ -62,15 +63,6 @@ async def get_signup(phone_number: str, db: Session = Depends(get_signup_get_asy
             return FormError(message="User not found")
     else:
         return FormError(message="Phone number should be a number")
-
-
-@router.get("/signup/{id}", response_model=Union[PydanticSignupForm, FormError])
-async def get_id(id: int, db: Session = Depends(get_db)):
-    result = await get_signup_id(db, id=id)
-    if result:
-        return result
-    else:
-        return FormError(message="User not found")
 
 
 @router.patch("/signup/{phone_number}", response_model=Union[Update_signup_form, dict])
@@ -99,3 +91,15 @@ async def delete_signup_form(id: int, db: Session = Depends(get_db)):
         delete_signup_record(db, id)
     else:
         raise HTTPException(status_code=404, detail="Signup form not found")
+
+
+@router.get("/signup/{id}", response_model=Union[PydanticSignupForm, FormError])
+async def get_signup_by_id_route(id: int, db: Session = Depends(get_signup_by_id_async)):
+    if id_exists(id):
+        signup_data = await get_signup_by_id_async(id=id)
+        if signup_data:
+            return signup_data
+        else:
+            return FormError(message="User not found")
+    else:
+        return FormError(message="ID should be a number")

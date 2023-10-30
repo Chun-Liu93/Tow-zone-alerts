@@ -35,10 +35,6 @@ def get_signup_by_phone_number(db: Session, phone_number: str) -> SqlAlchemySign
     return db.query(SqlAlchemySignupForm).filter(SqlAlchemySignupForm.phone_number == phone_number).first()
 
 
-def get_signup_id(db: Session, id: int) -> SqlAlchemySignupForm:
-    return db.query(SqlAlchemySignupForm).filter(SqlAlchemySignupForm.id == id).first()
-
-
 def update_user_data(db: Session, phone_number: str, updated_data: dict) -> SqlAlchemySignupForm:
     user = db.query(SqlAlchemySignupForm).filter(SqlAlchemySignupForm.phone_number == phone_number).first()
     if user:
@@ -60,3 +56,7 @@ def delete_signup_record(db: Session, id: int):
     if record_to_delete:
         db.delete(record_to_delete)
         db.commit()
+
+
+def get_signup_by_id(db: Session, id: int) -> SqlAlchemySignupForm:
+    return db.query(SqlAlchemySignupForm).filter(SqlAlchemySignupForm.id == id).first()
