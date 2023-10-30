@@ -60,3 +60,7 @@ def delete_signup_record(db: Session, id: int):
     if record_to_delete:
         db.delete(record_to_delete)
         db.commit()
+
+
+def get_signup_by_id(db: Session, id: int) -> SqlAlchemySignupForm:
+    return db.query(SqlAlchemySignupForm).filter(SqlAlchemySignupForm.id == id).first()

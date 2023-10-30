@@ -9,10 +9,10 @@ class FormError(BaseModel):
 
 class PydanticSignupForm(BaseModel):
     id: Optional[int]
-    phone_number: str  # Change data type to str to match VARCHAR
+    phone_number: str
     city: str
     address: Union[str, int]
-    license_plate: Optional[str]  # Change data type to str to match VARCHAR
+    license_plate: Optional[str]
     email: Optional[Union[str, int, None]]
     name: Optional[str]
     referee: Optional[int]
