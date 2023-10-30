@@ -37,3 +37,8 @@ async def get_signup_get_async_db(phone_number: str):
 async def get_signup_by_id(db: Session, id: int):
     query = select(SqlAlchemySignupForm).where(SqlAlchemySignupForm.id == id)
     return await database.fetch_one(query)
+
+
+async def get_id(id: int):
+    query = select(SqlAlchemySignupForm).where(SqlAlchemySignupForm.id == id)
+    return await database.fetch_one(query)

@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from queries.signup_queries import create_signup_form, get_signup_id
+from queries.signup_queries import create_signup_form
 from models.pydantic_models import PydanticSignupForm, FormError, Update_signup_form
 from models.sqlalchemy_models import SqlAlchemySignupForm
-from db.db import get_db, get_signup_get_async_db, get_signup_by_id
+from db.db import get_db, get_signup_get_async_db, get_signup_by_id, get_id
 import re
 from typing import Union
 from sqlalchemy import update
@@ -65,8 +65,8 @@ async def get_signup(phone_number: str, db: Session = Depends(get_signup_get_asy
 
 
 @router.get("/signup/{id}", response_model=Union[PydanticSignupForm, FormError])
-async def get_id(id: int, db: Session = Depends(get_db)):
-    result = await get_signup_id(db, id=id)
+async def gets_id(id: int, db: Session = Depends(get_id)):
+    result = await get_id(id=id)
     if result:
         return result
     else:
