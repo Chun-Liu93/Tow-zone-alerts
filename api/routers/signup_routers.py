@@ -53,16 +53,20 @@ def delete_signup_record(db: Session, id: int):
         raise HTTPException(status_code=404, detail="Signup form not found")
 
 
+# localhost/signup/123 -> phonenumber
+# localhost/signup/by_id/1
+
 @router.get("/signup/{phone_number}", response_model=Union[PydanticSignupForm, FormError])
 async def get_signup(phone_number: str, db: Session = Depends(get_signup_get_async_db)):
+    print("This is from the by phone number")
     if valid_phone_number(phone_number):
         signup_data = await get_signup_get_async_db(phone_number=phone_number)
         if signup_data:
             return signup_data
         else:
-            return FormError(message="User not found")
+            return FormError(message="User not found", error=True)
     else:
-        return FormError(message="Phone number should be a number")
+        return FormError(message="Phone number should be a number", error=True)
 
 
 @router.patch("/signup/{phone_number}", response_model=Union[Update_signup_form, dict])
@@ -92,14 +96,15 @@ async def delete_signup_form(id: int, db: Session = Depends(get_db)):
     else:
         raise HTTPException(status_code=404, detail="Signup form not found")
 
-
-@router.get("/signup/{id}", response_model=Union[PydanticSignupForm, FormError])
-async def get_signup_by_id_route(id: int, db: Session = Depends(get_signup_by_id_async)):
-    if id_exists(id):
+@router.get("/signup/by_id/{id}", response_model=Union[PydanticSignupForm, FormError])
+async def get_signup_by_id_route(id: int, db: Session = Depends(get_db)):
+    print("This is from by id")
+    print(f"id is {id}")
+    if id_exists(db, id):
         signup_data = await get_signup_by_id_async(id=id)
         if signup_data:
             return signup_data
         else:
-            return FormError(message="User not found")
+            return FormError(message="User not found", error=True)
     else:
-        return FormError(message="ID should be a number")
+        return FormError(message="ID should be a number", error=True)
