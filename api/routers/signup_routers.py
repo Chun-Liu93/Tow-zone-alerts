@@ -35,6 +35,15 @@ def valid_phone_number(phone_number: str):
     return True if res else False
 
 
+# Retrieves and checks to see if id exists
+def id_exists(db, id: int):
+    signup_data = db.query(SqlAlchemySignupForm).filter(SqlAlchemySignupForm.id == id).first()
+    if signup_data:
+        return True
+    else:
+        raise HTTPException(status_code=404, detail="User not found")
+
+
 def delete_signup_record(db: Session, id: int):
     db_account = db.query(SqlAlchemySignupForm).filter(SqlAlchemySignupForm.id == id).first()
     if db_account:
@@ -57,12 +66,15 @@ async def get_signup(phone_number: str, db: Session = Depends(get_signup_get_asy
 
 
 @router.get("/signup/{id}", response_model=Union[PydanticSignupForm, FormError])
-async def gets_id(id: int, db: Session = Depends(get_id)):
-    result = await get_id(id=id)
-    if result:
-        return result
+async def get_signup_by_id_route(id: int, db: Session = Depends(get_signup_by_id_async)):
+    if id_exists(id):
+        signup_data = await get_signup_by_id_async(id=id)
+        if signup_data:
+            return signup_data
+        else:
+            return FormError(message="User not found")
     else:
-        return FormError(message="User not found")
+        return FormError(message="ID should be a number")
 
 
 @router.patch("/signup/{phone_number}", response_model=Union[Update_signup_form, dict])
