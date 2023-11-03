@@ -1,6 +1,6 @@
 import React from 'react'; // Make sure to import React
 
-import { GoogleMap, useLoadScript } from "@react-google-maps/api";
+import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 
 const libraries = ["places"]; // Define the libraries you want to use
 
@@ -24,11 +24,13 @@ export const GoogleAPI = () => {
         {/* Your map component */}
         <GoogleMap
             id="map"
-            mapContainerStyle={{ width: "100%", height: "400px" }}
+            mapContainerStyle={{ width: "100%", height: "500px" }}
             zoom={8}
-            center={{ lat: -34.397, lng: 150.644 }}
+            center={{ lat: 42.361145, lng: -71.057083 }}
         >
-            {/* Your map content, markers, etc. */}
+            {/* <Marker
+                position={{ lat: 42.361145, lng: -71.057083 }}
+            /> */}
         </GoogleMap>
         </div>
     );
