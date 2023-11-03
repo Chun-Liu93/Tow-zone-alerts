@@ -29,7 +29,7 @@ def create_new_account(account_data: PydanticSignupForm, db: Session = Depends(g
     }
 
 
-def valid_phone_number(phone_number: str):
+def valid_phone_number(phone_number: str, max_length=10):
     pattern = re.compile(r'\d+')
     res = pattern.match(phone_number)
     return True if res else False

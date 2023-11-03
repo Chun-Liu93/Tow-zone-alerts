@@ -4,6 +4,7 @@ import { GoogleMap, useLoadScript } from "@react-google-maps/api";
 
 const libraries = ["places"]; // Define the libraries you want to use
 
+
 export const GoogleAPI = () => {
 // Initialize the Google Maps API with your API key
     const { isLoaded, loadError } = useLoadScript({

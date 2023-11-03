@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Container, Col, Row } from "react-bootstrap";
+import { GoogleMap, useLoadScript } from "@react-google-maps/api";
+
+const libraries = ["places"]; // Define the libraries you want to use
+
 
 
 const defaultUserValues = {
@@ -45,8 +49,8 @@ function ReferralSignupForm() {
         }
         if(!isValidEmail) {
             return;
-        }    
-        
+        }
+
         const accountData = {
         phone_number: phoneNumber,
         license_plate: licensePlate,
@@ -55,7 +59,7 @@ function ReferralSignupForm() {
         city,
         address
         };
-        
+
 
 // in the future, you want things like this to be in an "env" key
         const response = await fetch('http://localhost:8000/signup', {
@@ -68,6 +72,16 @@ function ReferralSignupForm() {
         const json = await response.json()
         setResult(json)
     };
+
+    const validateLicensePlate = (input) => {
+        const licenseValidation = /^[^!-\/:-@\[-`{-~]+$/
+        return licenseValidation.test(input);
+    }
+
+    const validateName = (input) => {
+        const nameValidation = /^[^!-\/:-@\[-`{-~]+$/
+        return nameValidation.test(input);
+    }
 
     const validateNumber = (input) => {
         const phoneValidation = /^[0-9]{10}$/;
@@ -88,7 +102,7 @@ function ReferralSignupForm() {
             setOtherInputForCity(false);
         }
     }
-    
+
     const handleHowDidYouHearChange = (e) => {
         const selectedValue = e.target.value;
         setHowDidYouHear(selectedValue);
@@ -190,10 +204,10 @@ function ReferralSignupForm() {
                             <select
                                 className="form-control"
                                 id="howDidYouHear"
-                                value={howDidYouHear} 
-                                onChange={handleHowDidYouHearChange} 
+                                value={howDidYouHear}
+                                onChange={handleHowDidYouHearChange}
                             >
-                                <option value="">Select an option</option> 
+                                <option value="">Select an option</option>
                                 <option value="Realtor/Real Estate Agent">Real Estate</option>
                                 <option value="Facebook">Facebook</option>
                                 <option value="Alumni Email">Alumni Email</option>
@@ -257,7 +271,7 @@ function ReferralSignupForm() {
                         </div>
                         <br />
                         <button type="submit" className="btn btn-primary">Sign Up</button>
-                    
+
                 </Col>
             </Row>
             </form>
