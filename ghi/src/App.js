@@ -8,7 +8,7 @@ import { GoogleAPI } from "./components/GoogleMap"; // Import GoogleAPI
 function App() {
   return (
     <div className="App">
-      <NavBar /> 
+      <NavBar />
       <ReferralSignupForm />
       <GoogleAPI /> {/* Use the GoogleAPI component here */}
       <Footer />

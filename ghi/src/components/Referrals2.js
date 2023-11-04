@@ -46,8 +46,8 @@
 //         }
 //         if(!isValidEmail) {
 //             return;
-//         }    
-        
+//         }
+
 //         const accountData = {
 //         phone_number: phoneNumber,
 //         license_plate: licensePlate,
@@ -58,7 +58,7 @@
 //         keepUpdated,
 //         localArtist,
 //         };
-        
+
 
 
 //         const response = await fetch('https://nmihika.pythonanywhere.com/google_form_trigger', {
@@ -91,7 +91,7 @@
 //             setOtherInputForCity(false);
 //         }
 //     }
-    
+
 //     const handleHowDidYouHearChange = (e) => {
 //         const selectedValue = e.target.value;
 //         setHowDidYouHear(selectedValue);
@@ -193,10 +193,10 @@
 //                             <select
 //                                 className="form-control"
 //                                 id="howDidYouHear"
-//                                 value={howDidYouHear} 
-//                                 onChange={handleHowDidYouHearChange} 
+//                                 value={howDidYouHear}
+//                                 onChange={handleHowDidYouHearChange}
 //                             >
-//                                 <option value="">Select an option</option> 
+//                                 <option value="">Select an option</option>
 //                                 <option value="Realtor/Real Estate Agent">Real Estate</option>
 //                                 <option value="Facebook">Facebook</option>
 //                                 <option value="Alumni Email">Alumni Email</option>
@@ -258,7 +258,7 @@
 //                             >
 //                             </input>
 //                         </div>
-//                         <br /> 
+//                         <br />
 //                         <div className="form-group">
 //                             <label htmlFor="localArtist">Know a local business or artist that is interested in advertising?</label>
 //                             <input
@@ -286,7 +286,7 @@
 //                         </div>
 //                         <br />
 //                         <button type="submit" className="btn btn-primary">Sign Up</button>
-                    
+
 //                 </Col>
 //             </Row>
 //             </form>
@@ -296,3 +296,6 @@
 // }
 
 // export default ReferralSignupForm;
+
+
+
