@@ -11,8 +11,8 @@ function App() {
     <div className="App">
       <NavBar />
       <ReferralSignupForm />
-      <GoogleAPI /> {/* Use the GoogleAPI component here */}
       <FindAddress />
+      <GoogleAPI /> {/* Use the GoogleAPI component here */}
       <Footer />
     </div>
   );
