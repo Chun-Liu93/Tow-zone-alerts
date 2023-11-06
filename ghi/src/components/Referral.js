@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Container, Col, Row } from "react-bootstrap";
 import { GoogleMap, useLoadScript, Autocomplete } from "@react-google-maps/api";
+// import usePlacesAutocomplete from 'use-places-autocomplete';
+import { GoogleAPI } from "./GoogleMap";
 
 // import {
 //     PlacesAutocomplete,
@@ -15,89 +17,33 @@ const defaultUserValues = {
     state: ""
 }
 
-
-function AutoFill() {
-    const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-    libraries: ["places"],
-    });
-
-    if (!isLoaded) {
-        return <div>Loading...</div>;
-    }
-
-    const userAddress = document.getElementById("address");
-    const autocomplete = new google.maps.places.Autocomplete(userAddress, {
-        componentRestrictions: { country: ["us"]},
-        fields: ["address_components", "geometry"],
-        types: ["address"],
-    });
-
-    autocomplete.addListener("place_changed", () => {
-        const place = autocomplete.getPlace();
-
-        if (!place.geometry) {
-            document.getElementById("address").placeholder = "Enter an address";
-            return;
-        }
-        else {
-            for (const component of place.address_components) {
-                const componentType = component.types[0];
-
-                switch (componentType) {
-                    case "locality":
-                        document.querySelector("#locality").value =
-                        component.long_name;
-                        break;
-                }
-            }
-        }
-    });
-}
-
-
 function ReferralSignupForm() {
 
-    // const { isLoaded, loadError } = useLoadScript({
+    // const { isLoaded } = useLoadScript({
     //     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     //     libraries: ["places"],
-    //     });
+    // });
 
-    //     if (loadError) {
-    //         return <div>Error loading Google Maps</div>;
+    // if (!isLoaded) {
+    //     return <div>Loading...</div>;
+    // }
+
+    // const userAddress = document.getElementById("address");
+    // const autocomplete = new google.maps.places.Autocomplete(userAddress, {
+    //     componentRestrictions: { country: ["us"]},
+    //     fields: ["address_components", "geometry"],
+    //     types: ["address"],
+    // });
+
+    // autocomplete.addListener("place_changed", () => {
+    //     const place = autocomplete.getPlace();
+
+    //     if (!place.geometry) {
+    //         document.getElementById("address").placeholder = "Enter an address";
+    //         return;
     //     }
+    // });
 
-    //     if (!isLoaded) {
-    //         return <div>Loading...</div>;
-    //     }
-
-    //     const userAddress = document.getElementById("address");
-    //     const autocomplete = new google.maps.places.Autocomplete(userAddress, {
-    //         componentRestrictions: { country: ["us"]},
-    //         fields: ["address_components", "geometry"],
-    //         types: ["address"],
-    //     });
-
-    //     autocomplete.addListener("place_changed", () => {
-    //         const place = autocomplete.getPlace();
-
-    //         if (!place.geometry) {
-    //             document.getElementById("address").placeholder = "Enter an address";
-    //             return;
-    //         }
-    //         else {
-    //             for (const component of place.address_components) {
-    //                 const componentType = component.types[0];
-
-    //                 switch (componentType) {
-    //                     case "locality":
-    //                         document.querySelector("#locality").value =
-    //                         component.long_name;
-    //                         break;
-    //                 }
-    //             }
-    //         }
-    //     });
 
     const [phoneNumber, setPhoneNumber] = useState("");
     const [city, setCity] = useState("");
@@ -259,7 +205,7 @@ function ReferralSignupForm() {
                         )}
                         </div>
                         <br />
-                        <AutoFill>
+                        {/* <Autocomplete> */}
                         <div className="form-group">
                             <label htmlFor="address">Location where you normally park:</label>
                             <input
@@ -271,7 +217,7 @@ function ReferralSignupForm() {
                             onChange={(e) => setAddress(e.target.value)}
                             />
                         </div>
-                        </AutoFill>
+                        {/* </Autocomplete> */}
                 </Col>
                 <Col xs={6} sm={6}>
                         <div className="form-group">
@@ -369,25 +315,3 @@ function ReferralSignupForm() {
 }
 
 export default ReferralSignupForm;
-
-
-// const userAddress = document.getElementById("address");
-// const autocomplete = new google.maps.places.Autocomplete(userAddress,);
-
-// autocomplete.addListener("place_changed", () => {
-//     const place = autocomplete.getPlace();
-
-//     if (!place.geometry) {
-//         document.getElementById("address").placeholder = "Enter an address";
-//         return;
-//     }
-// });
-
-// document.getElementById("signup_form").addEventListener('submit', function(e){
-//     e.preventDefault(); //prevent form submit
-//     const place = autocomplete.getPlace(); //get place from autocomplete
-//     if (!place.geometry) { //check if valid location
-//         document.getElementById("address").placeholder = "Enter a valid address";
-//         return;
-//     }
-// });

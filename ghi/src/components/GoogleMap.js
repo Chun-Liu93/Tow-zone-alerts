@@ -19,6 +19,7 @@ export const GoogleAPI = () => {
         return <div>Loading...</div>;
     }
 
+
     return (
         <div>
         {/* Your map component */}

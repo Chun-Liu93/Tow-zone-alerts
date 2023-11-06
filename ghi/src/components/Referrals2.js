@@ -298,4 +298,41 @@
 // export default ReferralSignupForm;
 
 
+// function AutoFill() {
+//     const { isLoaded } = useLoadScript({
+//     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+//     libraries: ["places"],
+//     });
 
+//     if (!isLoaded) {
+//         return <div>Loading...</div>;
+//     }
+
+//     const userAddress = document.getElementById("address");
+//     const autocomplete = new google.maps.places.Autocomplete(userAddress, {
+//         componentRestrictions: { country: ["us"]},
+//         fields: ["address_components", "geometry"],
+//         types: ["address"],
+//     });
+
+//     autocomplete.addListener("place_changed", () => {
+//         const place = autocomplete.getPlace();
+
+//         if (!place.geometry) {
+//             document.getElementById("address").placeholder = "Enter an address";
+//             return;
+//         }
+//         else {
+//             for (const component of place.address_components) {
+//                 const componentType = component.types[0];
+
+//                 switch (componentType) {
+//                     case "locality":
+//                         document.querySelector("#locality").value =
+//                         component.long_name;
+//                         break;
+//                 }
+//             }
+//         }
+//     });
+// }
