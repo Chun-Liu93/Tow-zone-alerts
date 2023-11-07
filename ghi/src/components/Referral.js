@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, Col, Row } from "react-bootstrap";
 import { GoogleMap, useLoadScript } from "@react-google-maps/api";
-
 import PlacesAutocomplete, {
     geocodeByAddress,
     geocodeByPlaceId,
@@ -13,10 +12,12 @@ const defaultUserValues = {
     city: undefined,
     state: ""
 }
+const libraries = ["places"]; 
 
 function ReferralSignupForm() {
     const { isLoaded, loadError } = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+        libraries
     });
 
     if (loadError) {
@@ -32,9 +33,9 @@ function ReferralSignupForm() {
     const [otherInputForCity, setOtherInputForCity] = useState(false);
     const [address, setAddress] = useState("");
     const [coordinates, setCoordinates] = useState({
-        lat:null,
-        lng:null
-    })
+        lat: null,
+        lng: null
+    });
     const [licensePlate, setLicensePlate] = useState("");
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
@@ -46,15 +47,12 @@ function ReferralSignupForm() {
     const [isValidNumber, setIsValidNumber] = useState(true);
     const [isValidEmail, setIsValidEmail] = useState(true);
     const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-    // const [errorMessage, setErrorMessage] = useState(null);
-    // const [successMessage, setSuccessMessage] = useState('');
 
-    const [result, setResult] = useState(undefined)
-    const  [errors, setErrors] = useState({})
-    const [values, setValues] = useState(defaultUserValues)
+    const [result, setResult] = useState(undefined);
+    const [errors, setErrors] = useState({});
+    const [values, setValues] = useState(defaultUserValues);
 
     const handleSignUp = async (e) => {
-        // console.dir({fn:"handleSignUp"})
         e.preventDefault();
         setIsFormSubmitted(true);
 
@@ -62,45 +60,45 @@ function ReferralSignupForm() {
             console.error('Required fields are missing.');
             return;
         }
-        if(!isValidNumber) {
+        if (!isValidNumber) {
             return;
         }
-        if(!isValidEmail) {
+        if (!isValidEmail) {
             return;
         }
 
         const accountData = {
-        phone_number: phoneNumber,
-        license_plate: licensePlate,
-        email,
-        name,
-        city,
-        address
+            phone_number: phoneNumber,
+            license_plate: licensePlate,
+            email,
+            name,
+            city,
+            address
         };
 
-// in the future, you want things like this to be in an "env" key
+        // In the future, you want things like this to be in an "env" key
         const response = await fetch('http://localhost:8000/signup', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(accountData),
-        })
-        const json = await response.json()
-        setResult(json)
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(accountData),
+        });
+        const json = await response.json();
+        setResult(json);
     };
 
     const validateNumber = (input) => {
         const phoneValidation = /^[0-9]{10}$/;
         return phoneValidation.test(input);
-    }
+    };
 
     const validateEmail = (email) => {
         const emailValidation = /^[^\s@]+@[^\s@]+\.(com|net|org|edu|gov|mil|co\.uk|io|ai|us)$/i;
         return emailValidation.test(email);
-        };
+    };
 
-    const handleCityChange =(e) => {
+    const handleCityChange = (e) => {
         const selectedValue = e.target.value;
         setCity(selectedValue);
         if (selectedValue === "Other") {
@@ -108,7 +106,7 @@ function ReferralSignupForm() {
         } else {
             setOtherInputForCity(false);
         }
-    }
+    };
 
     const handleHowDidYouHearChange = (e) => {
         const selectedValue = e.target.value;
@@ -120,14 +118,14 @@ function ReferralSignupForm() {
         }
     };
 
-            const handleSelect = async value =>{
-            const results = await geocodeByAddress(value);
-            console.log(results)
-            const ll = await getLatLng(results[0]);
-            console.log(ll);
-            setAddress(value);
-            setCoordinates(ll)
-            };
+    const handleSelect = async (value) => {
+        const results = await geocodeByAddress(value);
+        console.log(results);
+        const ll = await getLatLng(results[0]);
+        console.log(ll);
+        setAddress(value);
+        setCoordinates(ll);
+    };
 
     return (
         
