@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Container, Col, Row } from "react-bootstrap";
-import { GoogleMap, useLoadScript, Autocomplete } from "@react-google-maps/api";
-// import usePlacesAutocomplete from 'use-places-autocomplete';
-import { GoogleAPI } from "./GoogleMap";
+import { GoogleMap, useLoadScript } from "@react-google-maps/api";
 
-// import {
-//     PlacesAutocomplete,
-//     geocodeByAddress,
-//     geocodeByPlaceId,
-//     getLatLng,
-// } from 'react-places-autocomplete';
+import PlacesAutocomplete, {
+    geocodeByAddress,
+    geocodeByPlaceId,
+    getLatLng,
+} from 'react-places-autocomplete';
 
 const defaultUserValues = {
     email: "",
@@ -19,36 +16,14 @@ const defaultUserValues = {
 
 function ReferralSignupForm() {
 
-    // const { isLoaded } = useLoadScript({
-    //     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-    //     libraries: ["places"],
-    // });
-
-    // if (!isLoaded) {
-    //     return <div>Loading...</div>;
-    // }
-
-    // const userAddress = document.getElementById("address");
-    // const autocomplete = new google.maps.places.Autocomplete(userAddress, {
-    //     componentRestrictions: { country: ["us"]},
-    //     fields: ["address_components", "geometry"],
-    //     types: ["address"],
-    // });
-
-    // autocomplete.addListener("place_changed", () => {
-    //     const place = autocomplete.getPlace();
-
-    //     if (!place.geometry) {
-    //         document.getElementById("address").placeholder = "Enter an address";
-    //         return;
-    //     }
-    // });
-
-
     const [phoneNumber, setPhoneNumber] = useState("");
     const [city, setCity] = useState("");
     const [otherInputForCity, setOtherInputForCity] = useState(false);
     const [address, setAddress] = useState("");
+    const [coordinates, setCoordinates] = useState({
+        lat:null,
+        lng:null
+    })
     const [licensePlate, setLicensePlate] = useState("");
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
@@ -92,7 +67,6 @@ function ReferralSignupForm() {
         address
         };
 
-
 // in the future, you want things like this to be in an "env" key
         const response = await fetch('http://localhost:8000/signup', {
         method: 'POST',
@@ -104,16 +78,6 @@ function ReferralSignupForm() {
         const json = await response.json()
         setResult(json)
     };
-
-    const validateLicensePlate = (input) => {
-        const licenseValidation = /^[^!-\/:-@\[-`{-~]+$/
-        return licenseValidation.test(input);
-    }
-
-    const validateName = (input) => {
-        const nameValidation = /^[^!-\/:-@\[-`{-~]+$/
-        return nameValidation.test(input);
-    }
 
     const validateNumber = (input) => {
         const phoneValidation = /^[0-9]{10}$/;
@@ -144,6 +108,15 @@ function ReferralSignupForm() {
             setOtherInputForHowDidYouHear(false);
         }
     };
+
+            const handleSelect = async value =>{
+            const results = await geocodeByAddress(value);
+            console.log(results)
+            const ll = await getLatLng(results[0]);
+            console.log(ll);
+            setAddress(value);
+            setCoordinates(ll)
+            };
 
     return (
     <section className="body-container" id="connect">
@@ -200,24 +173,56 @@ function ReferralSignupForm() {
                                 id="otherSource1"
                                 value={otherSource1}
                                 onChange={(e) => setOtherSource1(e.target.value)}
+
                             />
                             </div>
                         )}
                         </div>
                         <br />
-                        {/* <Autocomplete> */}
                         <div className="form-group">
-                            <label htmlFor="address">Location where you normally park:</label>
-                            <input
-                            type="text"
-                            className="form-control"
-                            id="address"
-                            name="address"
+                        <PlacesAutocomplete
                             value={address}
-                            onChange={(e) => setAddress(e.target.value)}
-                            />
+                            onChange={(value) => setAddress(value)}
+                            onSelect={handleSelect}
+                            >
+                                {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+                                <div>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="address"
+                                        name="address"
+                                        value={address}
+                                    {...getInputProps({
+                                        placeholder: 'Where are you normally parked?',
+                                    })}
+                                    />
+                                    <div className="autocomplete-dropdown-container">
+                                    {loading && <div>Loading...</div>}
+                                    {suggestions.map(suggestion => {
+                                        const className = suggestion.active
+                                        ? 'suggestion-item--active'
+                                        : 'suggestion-item';
+                                        const style = suggestion.active
+                                        ? { backgroundColor: '#fafafa', cursor: 'pointer' }
+                                        : { backgroundColor: '#ffffff', cursor: 'pointer' };
+                                        return (
+                                        <div
+                                            key={suggestion.place_id}
+                                            {...getSuggestionItemProps(suggestion, {
+                                            className,
+                                            style,
+                                            })}
+                                        >
+                                            <span>{suggestion.description}</span>
+                                        </div>
+                                        );
+                                    })}
+                                    </div>
+                                </div>
+                                )}
+                            </PlacesAutocomplete>
                         </div>
-                        {/* </Autocomplete> */}
                 </Col>
                 <Col xs={6} sm={6}>
                         <div className="form-group">
@@ -313,5 +318,6 @@ function ReferralSignupForm() {
     </section>
 );
 }
+
 
 export default ReferralSignupForm;

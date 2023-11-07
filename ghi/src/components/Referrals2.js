@@ -336,3 +336,16 @@
 //         }
 //     });
 // }
+
+
+
+
+// const validateLicensePlate = (input) => {
+//     const licenseValidation = /^[^!-\/:-@\[-`{-~]+$/
+//     return licenseValidation.test(input);
+// }
+
+// const validateName = (input) => {
+//     const nameValidation = /^[^!-\/:-@\[-`{-~]+$/
+//     return nameValidation.test(input);
+// }
