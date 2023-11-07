@@ -27,7 +27,7 @@ export const GoogleAPI = () => {
             id="map"
             mapContainerStyle={{ width: "100%", height: "400px" }}
             zoom={8}
-            center={{ lat: -34.397, lng: 150.644 }}
+            center={{ lat: 42.361145, lng: -71.057083}}
         >
             {/* Your map content, markers, etc. */}
         </GoogleMap>
