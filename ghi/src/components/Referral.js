@@ -208,7 +208,7 @@ function ReferralSignupForm() {
                                         : { backgroundColor: '#ffffff', cursor: 'pointer' };
                                         return (
                                         <div
-                                            key={suggestion.place_id}
+                                            key={suggestion.placeId}
                                             {...getSuggestionItemProps(suggestion, {
                                             className,
                                             style,
