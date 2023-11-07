@@ -15,6 +15,17 @@ const defaultUserValues = {
 }
 
 function ReferralSignupForm() {
+    const { isLoaded, loadError } = useLoadScript({
+        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+    });
+
+    if (loadError) {
+        return <div>Error loading Google Maps</div>;
+    }
+
+    if (!isLoaded) {
+        return <div>Loading...</div>;
+    }
 
     const [phoneNumber, setPhoneNumber] = useState("");
     const [city, setCity] = useState("");
@@ -119,6 +130,7 @@ function ReferralSignupForm() {
             };
 
     return (
+        
     <section className="body-container" id="connect">
         <Container>
             <h1>Tow Zone Alerts (TZA) Sign Up Form</h1>
@@ -187,6 +199,7 @@ function ReferralSignupForm() {
                             >
                                 {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
                                 <div>
+                                    Address:
                                     <input
                                         type="text"
                                         className="form-control"
@@ -310,7 +323,6 @@ function ReferralSignupForm() {
                         </div>
                         <br />
                         <button type="submit" className="btn btn-primary">Sign Up</button>
-
                 </Col>
             </Row>
             </form>
