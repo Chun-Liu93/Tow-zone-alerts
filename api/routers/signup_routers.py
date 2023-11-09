@@ -29,7 +29,7 @@ def create_new_account(account_data: PydanticSignupForm, db: Session = Depends(g
     }
 
 
-def valid_phone_number(phone_number: str):
+def valid_phone_number(phone_number: str, max_length=10):
     pattern = re.compile(r'\d+')
     res = pattern.match(phone_number)
     return True if res else False
@@ -77,6 +77,18 @@ async def get_signup_by_id_route(id: int, db: Session = Depends(get_db)):
     else:
         return FormError(message="ID should be a number", error=True)
 
+
+
+@router.get("/signup/{id}", response_model=Union[PydanticSignupForm, FormError])
+async def get_signup_by_id_route(id: int, db: Session = Depends(get_signup_by_id_async)):
+    if id_exists(id):
+        signup_data = await get_signup_by_id_async(id=id)
+        if signup_data:
+            return signup_data
+        else:
+            return FormError(message="User not found")
+    else:
+        return FormError(message="ID should be a number")
 
 
 @router.patch("/signup/{phone_number}", response_model=Union[Update_signup_form, dict])

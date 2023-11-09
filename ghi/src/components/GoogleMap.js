@@ -19,6 +19,7 @@ export const GoogleAPI = () => {
         return <div>Loading...</div>;
     }
 
+
     return (
         <div>
         {/* Your map component */}
@@ -26,7 +27,7 @@ export const GoogleAPI = () => {
             id="map"
             mapContainerStyle={{ width: "100%", height: "500px" }}
             zoom={8}
-            center={{ lat: 42.361145, lng: -71.057083 }}
+            center={{ lat: 42.361145, lng: -71.057083}}
         >
             {/* <Marker
                 position={{ lat: 42.361145, lng: -71.057083 }}
