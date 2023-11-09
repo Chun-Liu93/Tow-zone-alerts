@@ -19,14 +19,7 @@ function ReferralSignupForm() {
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
         libraries
     });
-
-    if (loadError) {
-        return <div>Error loading Google Maps</div>;
-    }
-
-    if (!isLoaded) {
-        return <div>Loading...</div>;
-    }
+// function ReferralSignupForm() {
 
     const [phoneNumber, setPhoneNumber] = useState("");
     const [city, setCity] = useState("");
@@ -126,6 +119,14 @@ function ReferralSignupForm() {
         setAddress(value);
         setCoordinates(ll);
     };
+
+    if (loadError) {
+        return <div>Error loading Google Maps</div>;
+    }
+
+    if (!isLoaded) {
+        return <div>Loading...</div>;
+    }
 
     return (
         
