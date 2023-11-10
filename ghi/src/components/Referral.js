@@ -104,12 +104,14 @@ function ReferralSignupForm() {
     //     return emailValidation.test(email);
     // };
 
+
+
     const handleEmailChange = (e) => {
         const inputEmail = e.target.value;
         setEmail(inputEmail);
-        let emailRegex = /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/;
+        let emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
         if (!emailRegex.test(inputEmail)) {
-            setEmailMessage("Error! you have entered invalid email.");
+            setEmailMessage("Error! You have entered invalid email.");
         } else {
             setEmailMessage("");
         }
@@ -317,6 +319,7 @@ function ReferralSignupForm() {
                                 value={email}
                                 onChange={handleEmailChange}
                             />
+                            <p>{emailMessage}</p>
                         </div>
                         <br />
                         <div className="form-group">
