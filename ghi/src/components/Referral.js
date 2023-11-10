@@ -1,25 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { Container, Col, Row } from "react-bootstrap";
-import { GoogleMap, useLoadScript } from "@react-google-maps/api";
+import { useLoadScript } from "@react-google-maps/api";
 import PlacesAutocomplete, {
     geocodeByAddress,
-    geocodeByPlaceId,
     getLatLng,
 } from 'react-places-autocomplete';
+
+// import { useForm } from "react-hook-form";
+
+// import validator from "validator";
 
 const defaultUserValues = {
     email: "",
     city: undefined,
     state: ""
 }
-const libraries = ["places"]; 
+const libraries = ["places"];
 
 function ReferralSignupForm() {
     const { isLoaded, loadError } = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
         libraries
     });
-// function ReferralSignupForm() {
+
+    // const { register, handleSubmit } = useForm();
 
     const [phoneNumber, setPhoneNumber] = useState("");
     const [city, setCity] = useState("");
@@ -44,6 +48,8 @@ function ReferralSignupForm() {
     const [result, setResult] = useState(undefined);
     const [errors, setErrors] = useState({});
     const [values, setValues] = useState(defaultUserValues);
+
+    const [emailMessage, setEmailMessage] = useState("");
 
     const handleSignUp = async (e) => {
         e.preventDefault();
@@ -86,9 +92,27 @@ function ReferralSignupForm() {
         return phoneValidation.test(input);
     };
 
-    const validateEmail = (email) => {
-        const emailValidation = /^[^\s@]+@[^\s@]+\.(com|net|org|edu|gov|mil|co\.uk|io|ai|us)$/i;
-        return emailValidation.test(email);
+    // const validateEmail = (e) => {
+    //     const email = e.target.value;
+        // if (validator.isEmail(userEmail)) {
+        //     setEmailMessage("");
+        // } else {
+        //     setEmailMessage("Please enter a valid email.");
+        // }
+        // };
+    //     const emailValidation = /^[^\s@]+@[^\s@]+\.(com|net|org|edu|gov|mil|co\.uk|io|ai|us)$/i;
+    //     return emailValidation.test(email);
+    // };
+
+    const handleEmailChange = (e) => {
+        const inputEmail = e.target.value;
+        setEmail(inputEmail);
+        let emailRegex = /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/;
+        if (!emailRegex.test(inputEmail)) {
+            setEmailMessage("Error! you have entered invalid email.");
+        } else {
+            setEmailMessage("");
+        }
     };
 
     const handleCityChange = (e) => {
@@ -129,7 +153,7 @@ function ReferralSignupForm() {
     }
 
     return (
-        
+
     <section className="body-container" id="connect">
         <Container>
             <h1>Tow Zone Alerts (TZA) Sign Up Form</h1>
@@ -291,7 +315,7 @@ function ReferralSignupForm() {
                                 id="email"
                                 name="email"
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                onChange={handleEmailChange}
                             />
                         </div>
                         <br />
