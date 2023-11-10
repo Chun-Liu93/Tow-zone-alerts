@@ -51,6 +51,25 @@ function ReferralSignupForm() {
 
     const [emailMessage, setEmailMessage] = useState("");
 
+    const handleEmailChange = (e) => {
+        const inputEmail = e.target.value;
+        setEmail(inputEmail);
+        if (isFormSubmitted){
+            validateEmail();
+        }
+        };
+
+    const validateEmail = () => {
+        let emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+        if (!emailRegex.test(email)) {
+            setEmailMessage("Error! You have entered an invalid email.");
+            setIsValidEmail(false);
+        } else {
+            setEmailMessage("");
+            setIsValidEmail(true);
+        }
+    };
+
     const handleSignUp = async (e) => {
         e.preventDefault();
         setIsFormSubmitted(true);
@@ -59,12 +78,11 @@ function ReferralSignupForm() {
             console.error('Required fields are missing.');
             return;
         }
-        if (!isValidNumber) {
+        validateEmail();
+        if (!isValidNumber || !isValidEmail) {
             return;
         }
-        if (!isValidEmail) {
-            return;
-        }
+
 
         const accountData = {
             phone_number: phoneNumber,
@@ -91,8 +109,6 @@ function ReferralSignupForm() {
         const phoneValidation = /^[0-9]{10}$/;
         return phoneValidation.test(input);
     };
-
-    // const validateEmail = (e) => {
     //     const email = e.target.value;
         // if (validator.isEmail(userEmail)) {
         //     setEmailMessage("");
@@ -104,18 +120,6 @@ function ReferralSignupForm() {
     //     return emailValidation.test(email);
     // };
 
-
-
-    const handleEmailChange = (e) => {
-        const inputEmail = e.target.value;
-        setEmail(inputEmail);
-        let emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
-        if (!emailRegex.test(inputEmail)) {
-            setEmailMessage("Error! You have entered invalid email.");
-        } else {
-            setEmailMessage("");
-        }
-    };
 
     const handleCityChange = (e) => {
         const selectedValue = e.target.value;
