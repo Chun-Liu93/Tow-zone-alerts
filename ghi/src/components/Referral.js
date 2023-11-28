@@ -1,18 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { Container, Col, Row } from "react-bootstrap";
-
+import { useLoadScript } from "@react-google-maps/api";
+import PlacesAutocomplete, {
+    geocodeByAddress,
+    getLatLng,
+} from 'react-places-autocomplete';
 
 const defaultUserValues = {
     email: "",
     city: undefined,
     state: ""
 }
+const libraries = ["places"]; 
 
 function ReferralSignupForm() {
+    const { isLoaded, loadError } = useLoadScript({
+        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+        libraries
+    });
+// function ReferralSignupForm() {
+
     const [phoneNumber, setPhoneNumber] = useState("");
     const [city, setCity] = useState("");
     const [otherInputForCity, setOtherInputForCity] = useState(false);
     const [address, setAddress] = useState("");
+    const [coordinates, setCoordinates] = useState({
+        lat: null,
+        lng: null
+    });
     const [licensePlate, setLicensePlate] = useState("");
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
@@ -24,15 +39,12 @@ function ReferralSignupForm() {
     const [isValidNumber, setIsValidNumber] = useState(true);
     const [isValidEmail, setIsValidEmail] = useState(true);
     const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-    // const [errorMessage, setErrorMessage] = useState(null);
-    // const [successMessage, setSuccessMessage] = useState('');
 
-    const [result, setResult] = useState(undefined)
-    const  [errors, setErrors] = useState({})
-    const [values, setValues] = useState(defaultUserValues)
+    const [result, setResult] = useState(undefined);
+    const [errors, setErrors] = useState({});
+    const [values, setValues] = useState(defaultUserValues);
 
     const handleSignUp = async (e) => {
-        // console.dir({fn:"handleSignUp"})
         e.preventDefault();
         setIsFormSubmitted(true);
 
@@ -40,46 +52,45 @@ function ReferralSignupForm() {
             console.error('Required fields are missing.');
             return;
         }
-        if(!isValidNumber) {
+        if (!isValidNumber) {
             return;
         }
-        if(!isValidEmail) {
+        if (!isValidEmail) {
             return;
-        }    
-        
-        const accountData = {
-        phone_number: phoneNumber,
-        license_plate: licensePlate,
-        email,
-        name,
-        city,
-        address
-        };
-        
+        }
 
-// in the future, you want things like this to be in an "env" key
+        const accountData = {
+            phone_number: phoneNumber,
+            license_plate: licensePlate,
+            email,
+            name,
+            city,
+            address
+        };
+
+        // In the future, you want things like this to be in an "env" key
         const response = await fetch('http://localhost:8000/signup', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(accountData),
-        })
-        const json = await response.json()
-        setResult(json)
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(accountData),
+        });
+        const json = await response.json();
+        setResult(json);
     };
 
     const validateNumber = (input) => {
         const phoneValidation = /^[0-9]{10}$/;
         return phoneValidation.test(input);
-    }
+    };
 
     const validateEmail = (email) => {
         const emailValidation = /^[^\s@]+@[^\s@]+\.(com|net|org|edu|gov|mil|co\.uk|io|ai|us)$/i;
         return emailValidation.test(email);
-        };
+    };
 
-    const handleCityChange =(e) => {
+    const handleCityChange = (e) => {
         const selectedValue = e.target.value;
         setCity(selectedValue);
         if (selectedValue === "Other") {
@@ -87,8 +98,8 @@ function ReferralSignupForm() {
         } else {
             setOtherInputForCity(false);
         }
-    }
-    
+    };
+
     const handleHowDidYouHearChange = (e) => {
         const selectedValue = e.target.value;
         setHowDidYouHear(selectedValue);
@@ -99,7 +110,29 @@ function ReferralSignupForm() {
         }
     };
 
+    const handleAddressChange = (value) => {
+        setAddress(value);
+    }
+
+    const handleSelect = async (value) => {
+        const results = await geocodeByAddress(value);
+        console.log(results);
+        const ll = await getLatLng(results[0]);
+        console.log("Selected Coordinates:", ll);
+        setAddress(value);
+        setCoordinates(ll);
+    };
+
+    if (loadError) {
+        return <div>Error loading Google Maps</div>;
+    }
+
+    if (!isLoaded) {
+        return <div>Loading...</div>;
+    }
+
     return (
+        
     <section className="body-container" id="connect">
         <Container>
             <h1>Tow Zone Alerts (TZA) Sign Up Form</h1>
@@ -116,7 +149,7 @@ function ReferralSignupForm() {
             Check out our website towzonealerts.com and our backstory.
             </p>
             {result && JSON.stringify(result)}
-            <form onSubmit={handleSignUp}>
+            <form onSubmit={handleSignUp} id="signup_form">
             <Row className="row-equal-height">
                 <Col xs={6} sm={6}>
                         <div className="form-group">
@@ -154,21 +187,56 @@ function ReferralSignupForm() {
                                 id="otherSource1"
                                 value={otherSource1}
                                 onChange={(e) => setOtherSource1(e.target.value)}
+
                             />
                             </div>
                         )}
                         </div>
                         <br />
                         <div className="form-group">
-                            <label htmlFor="address">Location where you normally park:</label>
-                            <input
-                            type="text"
-                            className="form-control"
-                            id="address"
-                            name="address"
+                        <PlacesAutocomplete
                             value={address}
-                            onChange={(e) => setAddress(e.target.value)}
-                            />
+                            onChange={(value) => handleAddressChange(value)}
+                            onSelect={handleSelect}
+                            >
+                                {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+                                <div>
+                                    Address:
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="address"
+                                        name="address"
+                                        value={address}
+                                    {...getInputProps({
+                                        placeholder: 'Where are you normally parked?',
+                                    })}
+                                    />
+                                    <div className="autocomplete-dropdown-container">
+                                    {loading && <div>Loading...</div>}
+                                    {suggestions.map(suggestion => {
+                                        const className = suggestion.active
+                                        ? 'suggestion-item--active'
+                                        : 'suggestion-item';
+                                        const style = suggestion.active
+                                        ? { backgroundColor: '#fafafa', cursor: 'pointer' }
+                                        : { backgroundColor: '#ffffff', cursor: 'pointer' };
+                                        return (
+                                        <div
+                                            key={suggestion.placeId}
+                                            {...getSuggestionItemProps(suggestion, {
+                                            className,
+                                            style,
+                                            })}
+                                        >
+                                            <span>{suggestion.description}</span>
+                                        </div>
+                                        );
+                                    })}
+                                    </div>
+                                </div>
+                                )}
+                            </PlacesAutocomplete>
                         </div>
                 </Col>
                 <Col xs={6} sm={6}>
@@ -190,10 +258,10 @@ function ReferralSignupForm() {
                             <select
                                 className="form-control"
                                 id="howDidYouHear"
-                                value={howDidYouHear} 
-                                onChange={handleHowDidYouHearChange} 
+                                value={howDidYouHear}
+                                onChange={handleHowDidYouHearChange}
                             >
-                                <option value="">Select an option</option> 
+                                <option value="">Select an option</option>
                                 <option value="Realtor/Real Estate Agent">Real Estate</option>
                                 <option value="Facebook">Facebook</option>
                                 <option value="Alumni Email">Alumni Email</option>
@@ -257,7 +325,6 @@ function ReferralSignupForm() {
                         </div>
                         <br />
                         <button type="submit" className="btn btn-primary">Sign Up</button>
-                    
                 </Col>
             </Row>
             </form>
@@ -265,5 +332,6 @@ function ReferralSignupForm() {
     </section>
 );
 }
+
 
 export default ReferralSignupForm;
