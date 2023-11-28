@@ -12,7 +12,7 @@
 // export const FindAddress = () => {
 
 //     const [address, setAddress] = useState("");
-//     const [coordinates, setCoordinates] = useState({
+//     const [coordinates, setCoordinates] = useState({œ
 //         lat:null,
 //         lng:null
 //     })

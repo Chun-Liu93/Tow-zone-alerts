@@ -50,16 +50,9 @@ function ReferralSignupForm() {
     const [values, setValues] = useState(defaultUserValues);
 
     const [emailMessage, setEmailMessage] = useState("");
+    const [phoneMessage, setPhoneMessage] = useState("");
 
-    const handleEmailChange = (e) => {
-        const inputEmail = e.target.value;
-        setEmail(inputEmail);
-        if (isFormSubmitted){
-            validateEmail();
-        }
-        };
-
-    const validateEmail = () => {
+    const validateEmail = (email) => {
         let emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
         if (!emailRegex.test(email)) {
             setEmailMessage("Error! You have entered an invalid email.");
@@ -70,18 +63,59 @@ function ReferralSignupForm() {
         }
     };
 
+    const handleEmailChange = (e) => {
+        const inputEmail = e.target.value;
+        setEmail(inputEmail);
+        if (isFormSubmitted){
+            validateEmail(inputEmail);
+        }
+        };
+
+    const validateNumber = (phoneNumber) => {
+        let phoneValidation = /^[0-9]{10}$/;
+        if (!phoneValidation.test(phoneNumber)) {
+            setPhoneMessage("Error! Please enter a valid phone number")
+            setIsValidNumber(false);
+            return;
+        } else {
+            setPhoneMessage("");
+            setIsValidNumber(true);
+        }
+    };
+
+    const handlePhoneChange = (e) => {
+        const inputNumber = e.target.value;
+        setPhoneNumber(inputNumber);
+        if (isFormSubmitted) {
+            validateNumber(inputNumber);
+        }
+    };
+
+
     const handleSignUp = async (e) => {
         e.preventDefault();
         setIsFormSubmitted(true);
+        validateNumber(phoneNumber);
 
-        if (!phoneNumber || !city || !address || !howDidYouHear) {
+        if (email !== "") {
+            validateEmail(email);
+        } else {
+            setIsValidEmail(true);
+        }
+
+        if (!phoneNumber || !city || !address || !howDidYouHear ||!isValidNumber || !isValidEmail) {
             console.error('Required fields are missing.');
             return;
         }
-        validateEmail();
-        if (!isValidNumber || !isValidEmail) {
-            return;
-        }
+        // if (isEmail(email)) {
+        //     validateEmail();
+        //     if (!isValidEmail) {
+        //         return;
+        //     }
+        // }
+        // if (!isValidNumber || !isValidEmail) {
+        //     return;
+        // }
 
 
         const accountData = {
@@ -105,10 +139,6 @@ function ReferralSignupForm() {
         setResult(json);
     };
 
-    const validateNumber = (input) => {
-        const phoneValidation = /^[0-9]{10}$/;
-        return phoneValidation.test(input);
-    };
     //     const email = e.target.value;
         // if (validator.isEmail(userEmail)) {
         //     setEmailMessage("");
@@ -187,8 +217,9 @@ function ReferralSignupForm() {
                             id="phoneNumber"
                             name="phoneNumber"
                             value={phoneNumber}
-                            onChange={(e) => setPhoneNumber(e.target.value)}
+                            onChange={handlePhoneChange}
                             />
+                            {!isValidNumber && <p>{phoneMessage}</p>}
                         </div>
                         <br />
                         <div className="form-group">
@@ -323,7 +354,7 @@ function ReferralSignupForm() {
                                 value={email}
                                 onChange={handleEmailChange}
                             />
-                            <p>{emailMessage}</p>
+                            {!isValidEmail && <p>{emailMessage}</p>}
                         </div>
                         <br />
                         <div className="form-group">
