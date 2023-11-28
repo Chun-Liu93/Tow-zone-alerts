@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Container, Col, Row } from "react-bootstrap";
-import { GoogleMap, useLoadScript } from "@react-google-maps/api";
+import { useLoadScript } from "@react-google-maps/api";
 import PlacesAutocomplete, {
     geocodeByAddress,
-    geocodeByPlaceId,
     getLatLng,
 } from 'react-places-autocomplete';
 
@@ -111,11 +110,15 @@ function ReferralSignupForm() {
         }
     };
 
+    const handleAddressChange = (value) => {
+        setAddress(value);
+    }
+
     const handleSelect = async (value) => {
         const results = await geocodeByAddress(value);
         console.log(results);
         const ll = await getLatLng(results[0]);
-        console.log(ll);
+        console.log("Selected Coordinates:", ll);
         setAddress(value);
         setCoordinates(ll);
     };
@@ -193,7 +196,7 @@ function ReferralSignupForm() {
                         <div className="form-group">
                         <PlacesAutocomplete
                             value={address}
-                            onChange={(value) => setAddress(value)}
+                            onChange={(value) => handleAddressChange(value)}
                             onSelect={handleSelect}
                             >
                                 {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (

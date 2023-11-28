@@ -1,11 +1,9 @@
-import React from 'react'; // Make sure to import React
+import React from 'react';
+import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
 
-import { GoogleMap, useLoadScript } from "@react-google-maps/api";
+const libraries = ["places"];
 
-const libraries = ["places"]; // Define the libraries you want to use
-
-export const GoogleAPI = () => {
-// Initialize the Google Maps API with your API key
+export const GoogleAPI = ({ lat, lng, zoom, markers }) => {
     const { isLoaded, loadError } = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
         libraries,
@@ -19,18 +17,18 @@ export const GoogleAPI = () => {
         return <div>Loading...</div>;
     }
 
+    console.log("Markers:", markers);
 
     return (
         <div>
-        {/* Your map component */}
-        <GoogleMap
-            id="map"
-            mapContainerStyle={{ width: "100%", height: "400px" }}
-            zoom={8}
-            center={{ lat: 42.361145, lng: -71.057083}}
-        >
-            {/* Your map content, markers, etc. */}
-        </GoogleMap>
+            <GoogleMap
+                id="map"
+                mapContainerStyle={{ width: "100%", height: "600px" }}
+                zoom={zoom}
+                center={{ lat, lng }}
+            >
+                {markers && markers.map((m, i) => <Marker key={`${i}${lat}${lng}`} position={m} />)}
+            </GoogleMap>
         </div>
     );
 };
