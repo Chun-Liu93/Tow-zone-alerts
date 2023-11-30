@@ -9,7 +9,7 @@ import logging
 from typing import Union
 from sqlalchemy import update
 
-router = APIRouter()}
+router = APIRouter()
 
 
 def valid_phone_number(phone_number: str):
