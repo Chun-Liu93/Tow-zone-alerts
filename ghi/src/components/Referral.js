@@ -40,7 +40,7 @@ function ReferralSignupForm() {
     const [otherSource2, setOtherSource2] = useState("");
     const [isValidNumber, setIsValidNumber] = useState(true);
     const [isValidEmail, setIsValidEmail] = useState(true);
-    const [isNameValid, setIsNameValid] = useState(true);
+    const [isValidName, setIsValidName] = useState(true);
     const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
     const [result, setResult] = useState(undefined);
@@ -67,7 +67,7 @@ function ReferralSignupForm() {
     const validateNumber = (phoneNumber) => {
         let phoneValidation = /^[0-9]{10}$/;
         if (!phoneValidation.test(phoneNumber)) {
-            setPhoneMessage("Error! Please enter a valid phone number")
+            setPhoneMessage("Error! Please enter a valid phone number");
             setIsValidNumber(false);
         } else {
             setPhoneMessage("");
@@ -78,8 +78,16 @@ function ReferralSignupForm() {
 
     const validateName = (name) => {
         let nameValidation = /^[A-Za-z]+$/;
+        if (!nameValidation.test(name)) {
+            setNameMessage("Error! Cannot include numbers or special characters");
+            setIsValidName(false);
+            return;
+        } else {
+            setNameMessage("");
+            setIsValidName(true);
+        }
+    };
 
-    }
 
     const validateForm = () => {
         if (email.trim() !== '') {
@@ -89,9 +97,16 @@ function ReferralSignupForm() {
                 return false;
             }
         }
+        if (name !== '') {
+            validateName(name);
+            if (!isValidName) {
+                console.error('Name validation failed.');
+                return false;
+            }
+        }
         validateNumber(phoneNumber);
 
-        if (!isValidEmail || !isValidNumber) {
+        if (!isValidEmail || !isValidNumber || !isValidName) {
             console.error('Invalid entries.');
             return false;
         }
@@ -353,6 +368,7 @@ function ReferralSignupForm() {
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                             />
+                            {!isValidName && <p>{nameMessage}</p>}
                         </div>
                         <br />
                         <div className="form-group">
