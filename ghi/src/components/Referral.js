@@ -6,9 +6,6 @@ import PlacesAutocomplete, {
     getLatLng,
 } from 'react-places-autocomplete';
 
-// import { useForm } from "react-hook-form";
-
-// import validator from "validator";
 
 const defaultUserValues = {
     email: "",
@@ -43,6 +40,7 @@ function ReferralSignupForm() {
     const [otherSource2, setOtherSource2] = useState("");
     const [isValidNumber, setIsValidNumber] = useState(true);
     const [isValidEmail, setIsValidEmail] = useState(true);
+    const [isNameValid, setIsNameValid] = useState(true);
     const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
     const [result, setResult] = useState(undefined);
@@ -51,71 +49,69 @@ function ReferralSignupForm() {
 
     const [emailMessage, setEmailMessage] = useState("");
     const [phoneMessage, setPhoneMessage] = useState("");
+    const [nameMessage, setNameMessage] = useState("");
 
     const validateEmail = (email) => {
         let emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
         if (!emailRegex.test(email)) {
             setEmailMessage("Error! You have entered an invalid email.");
             setIsValidEmail(false);
+            return;
         } else {
             setEmailMessage("");
             setIsValidEmail(true);
         }
     };
 
-    const handleEmailChange = (e) => {
-        const inputEmail = e.target.value;
-        setEmail(inputEmail);
-        if (isFormSubmitted){
-            validateEmail(inputEmail);
-        }
-        };
 
     const validateNumber = (phoneNumber) => {
         let phoneValidation = /^[0-9]{10}$/;
         if (!phoneValidation.test(phoneNumber)) {
             setPhoneMessage("Error! Please enter a valid phone number")
             setIsValidNumber(false);
-            return;
         } else {
             setPhoneMessage("");
             setIsValidNumber(true);
         }
     };
 
-    const handlePhoneChange = (e) => {
-        const inputNumber = e.target.value;
-        setPhoneNumber(inputNumber);
-        if (isFormSubmitted) {
-            validateNumber(inputNumber);
+
+    const validateName = (name) => {
+        let nameValidation = /^[A-Za-z]+$/;
+
+    }
+
+    const validateForm = () => {
+        if (email.trim() !== '') {
+            validateEmail(email);
+            if (!isValidEmail) {
+                console.error('Email validation failed.');
+                return false;
+            }
         }
+        validateNumber(phoneNumber);
+
+        if (!isValidEmail || !isValidNumber) {
+            console.error('Invalid entries.');
+            return false;
+        }
+
+        if (!phoneNumber || !city || !address || !howDidYouHear) {
+            console.error('Required fields are missing.');
+            return false;
+        }
+        return true;
     };
 
 
     const handleSignUp = async (e) => {
         e.preventDefault();
-        setIsFormSubmitted(true);
-        validateNumber(phoneNumber);
 
-        if (email !== "") {
-            validateEmail(email);
-        } else {
-            setIsValidEmail(true);
-        }
-
-        if (!phoneNumber || !city || !address || !howDidYouHear ||!isValidNumber || !isValidEmail) {
-            console.error('Required fields are missing.');
+        if (!validateForm()) {
             return;
         }
-        // if (isEmail(email)) {
-        //     validateEmail();
-        //     if (!isValidEmail) {
-        //         return;
-        //     }
-        // }
-        // if (!isValidNumber || !isValidEmail) {
-        //     return;
-        // }
+
+        setIsFormSubmitted(true);
 
 
         const accountData = {
@@ -138,17 +134,6 @@ function ReferralSignupForm() {
         const json = await response.json();
         setResult(json);
     };
-
-    //     const email = e.target.value;
-        // if (validator.isEmail(userEmail)) {
-        //     setEmailMessage("");
-        // } else {
-        //     setEmailMessage("Please enter a valid email.");
-        // }
-        // };
-    //     const emailValidation = /^[^\s@]+@[^\s@]+\.(com|net|org|edu|gov|mil|co\.uk|io|ai|us)$/i;
-    //     return emailValidation.test(email);
-    // };
 
 
     const handleCityChange = (e) => {
@@ -217,7 +202,7 @@ function ReferralSignupForm() {
                             id="phoneNumber"
                             name="phoneNumber"
                             value={phoneNumber}
-                            onChange={handlePhoneChange}
+                            onChange={(e) => setPhoneNumber(e.target.value)}
                             />
                             {!isValidNumber && <p>{phoneMessage}</p>}
                         </div>
@@ -352,7 +337,7 @@ function ReferralSignupForm() {
                                 id="email"
                                 name="email"
                                 value={email}
-                                onChange={handleEmailChange}
+                                onChange={(e) => setEmail(e.target.value)}
                             />
                             {!isValidEmail && <p>{emailMessage}</p>}
                         </div>
