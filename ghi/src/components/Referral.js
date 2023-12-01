@@ -77,9 +77,9 @@ function ReferralSignupForm() {
 
 
     const validateName = (name) => {
-        let nameValidation = /^[A-Za-z]+$/;
+        let nameValidation = /^[a-zA-Z]{2,40} [a-zA-Z]{2,40}$/;
         if (!nameValidation.test(name)) {
-            setNameMessage("Error! Cannot include numbers or special characters");
+            setNameMessage("Error! Please enter a valid name");
             setIsValidName(false);
             return;
         } else {
@@ -90,6 +90,9 @@ function ReferralSignupForm() {
 
 
     const validateForm = () => {
+
+        validateNumber(phoneNumber);
+
         if (email.trim() !== '') {
             validateEmail(email);
             if (!isValidEmail) {
@@ -97,17 +100,26 @@ function ReferralSignupForm() {
                 return false;
             }
         }
-        if (name !== '') {
+        if (name.trim() !== '') {
             validateName(name);
             if (!isValidName) {
                 console.error('Name validation failed.');
                 return false;
             }
         }
-        validateNumber(phoneNumber);
 
-        if (!isValidEmail || !isValidNumber || !isValidName) {
-            console.error('Invalid entries.');
+        if (!isValidName) {
+            console.error('Invalid name')
+            return false;
+        }
+
+        if (!isValidEmail) {
+            console.error('Invalid email')
+            return false;
+        }
+
+        if (!isValidNumber) {
+            console.error('Invalid number');
             return false;
         }
 
