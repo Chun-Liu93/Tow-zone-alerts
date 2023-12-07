@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Container, Col, Row } from "react-bootstrap";
-import { useLoadScript } from "@react-google-maps/api";
+import { useLoadScript, GoogleMap } from "@react-google-maps/api";
 import PlacesAutocomplete, {
     geocodeByAddress,
     getLatLng,
 } from 'react-places-autocomplete';
+import { Marker } from "@react-google-maps/api";
+
+
 
 const defaultUserValues = {
     email: "",
@@ -13,21 +16,12 @@ const defaultUserValues = {
 }
 const libraries = ["places"]; 
 
-function ReferralSignupForm() {
-    const { isLoaded, loadError } = useLoadScript({
-        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-        libraries
-    });
-// function ReferralSignupForm() {
+function ReferralSignupForm ({setCoordinates: onSetCoordinates}) {
 
     const [phoneNumber, setPhoneNumber] = useState("");
     const [city, setCity] = useState("");
     const [otherInputForCity, setOtherInputForCity] = useState(false);
     const [address, setAddress] = useState("");
-    const [coordinates, setCoordinates] = useState({
-        lat: null,
-        lng: null
-    });
     const [licensePlate, setLicensePlate] = useState("");
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
@@ -39,6 +33,21 @@ function ReferralSignupForm() {
     const [isValidNumber, setIsValidNumber] = useState(true);
     const [isValidEmail, setIsValidEmail] = useState(true);
     const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+
+    // Google Map hooks
+    const { isLoaded, loadError } = useLoadScript({
+        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+        libraries
+    });
+    // 40.7128° N, 74.0060° W
+    // 40.6970193,-74.3093248
+    const [coordinates, setCoordinates] = useState({
+        lat: 40.697019,
+        lng: -74.3093248
+    });
+    const [zoom, setZoom] = useState(8);
+    const [mapCenter, setMapCenter] = useState({ lat: coordinates.lat, lng: coordinates.lng });   
+    const markers = [coordinates]
 
     const [result, setResult] = useState(undefined);
     const [errors, setErrors] = useState({});
@@ -114,15 +123,15 @@ function ReferralSignupForm() {
         setAddress(value);
     }
 
-    const handleSelect = async (value) => {
-        const results = await geocodeByAddress(value);
-        console.log(results);
+    const handleSelect = async (address) => {
+        const results = await geocodeByAddress(address);
         const ll = await getLatLng(results[0]);
-        console.log("Selected Coordinates:", ll);
-        setAddress(value);
+        setAddress(address);
         setCoordinates(ll);
+        setMapCenter(ll); // Update the map center
+        onSetCoordinates(ll);
     };
-
+    
     if (loadError) {
         return <div>Error loading Google Maps</div>;
     }
@@ -328,6 +337,19 @@ function ReferralSignupForm() {
                 </Col>
             </Row>
             </form>
+            <p>{JSON.stringify(coordinates)}</p>
+            {coordinates.lat && coordinates.lng && (
+            <div>
+                <GoogleMap
+                id="map"
+                mapContainerStyle={{ width: "100%", height: "600px" }}
+                zoom={zoom}
+                center={mapCenter}
+                >
+                {markers && markers.map((m, i) => <Marker key={`${i}${m.lat}${m.lng}`} position={m} />)}
+                </GoogleMap>
+            </div>
+            )}
         </Container>
     </section>
 );
