@@ -14,7 +14,7 @@ const defaultUserValues = {
     city: undefined,
     state: ""
 }
-const libraries = ["places"]; 
+const libraries = ["places"];
 
 function ReferralSignupForm ({setCoordinates: onSetCoordinates}) {
 
@@ -141,7 +141,7 @@ function ReferralSignupForm ({setCoordinates: onSetCoordinates}) {
     }
 
     return (
-        
+
     <section className="body-container" id="connect">
         <Container>
             <h1>Tow Zone Alerts (TZA) Sign Up Form</h1>
