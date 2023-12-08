@@ -12,24 +12,7 @@ from sqlalchemy import update
 router = APIRouter()
 
 
-@router.post("/signup/", response_model=Union[PydanticSignupForm, FormError])
-def create_new_account(account_data: PydanticSignupForm, db: Session = Depends(get_db)):
-    db_account = create_signup_form(db, account_data)
-    print(db_account)
-    print(db_account.address)
-    return {
-        "id": db_account.id,
-        "phone_number": db_account.phone_number,
-        "city": db_account.city,
-        "address": db_account.address,
-        "license_plate": db_account.license_plate,
-        "email": db_account.email,
-        "name": db_account.name,
-        "referee": db_account.referee
-    }
-
-
-def valid_phone_number(phone_number: str, max_length=10):
+def valid_phone_number(phone_number: str):
     pattern = re.compile(r'\d+')
     res = pattern.match(phone_number)
     return True if res else False
@@ -51,6 +34,23 @@ def delete_signup_record(db: Session, id: int):
         db.commit()
     else:
         raise HTTPException(status_code=404, detail="Signup form not found")
+
+
+@router.post("/signup/", response_model=Union[PydanticSignupForm, FormError])
+def create_new_account(account_data: PydanticSignupForm, db: Session = Depends(get_db)):
+    db_account = create_signup_form(db, account_data)
+    print(db_account)
+    print(db_account.address)
+    return {
+        "id": db_account.id,
+        "phone_number": db_account.phone_number,
+        "city": db_account.city,
+        "address": db_account.address,
+        "license_plate": db_account.license_plate,
+        "email": db_account.email,
+        "name": db_account.name,
+        "referee": db_account.referee
+    }
 
 
 @router.get("/signup/{phone_number}", response_model=Union[PydanticSignupForm, FormError])
@@ -76,19 +76,6 @@ async def get_signup_by_id_route(id: int, db: Session = Depends(get_db)):
             return FormError(message="User not found", error=True)
     else:
         return FormError(message="ID should be a number", error=True)
-
-
-
-@router.get("/signup/{id}", response_model=Union[PydanticSignupForm, FormError])
-async def get_signup_by_id_route(id: int, db: Session = Depends(get_signup_by_id_async)):
-    if id_exists(id):
-        signup_data = await get_signup_by_id_async(id=id)
-        if signup_data:
-            return signup_data
-        else:
-            return FormError(message="User not found")
-    else:
-        return FormError(message="ID should be a number")
 
 
 @router.patch("/signup/{phone_number}", response_model=Union[Update_signup_form, dict])

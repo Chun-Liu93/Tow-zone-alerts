@@ -5,14 +5,15 @@ import PlacesAutocomplete, {
     geocodeByAddress,
     getLatLng,
 } from 'react-places-autocomplete';
+import { GoogleMap, Marker } from "@react-google-maps/api";
 
+const libraries = ["places"];
 
 const defaultUserValues = {
     email: "",
     city: undefined,
     state: ""
 }
-const libraries = ["places"];
 
 function ReferralSignupForm() {
     const { isLoaded, loadError } = useLoadScript({
@@ -40,7 +41,7 @@ function ReferralSignupForm() {
     const [otherSource2, setOtherSource2] = useState("");
     const [isValidNumber, setIsValidNumber] = useState(true);
     const [isValidEmail, setIsValidEmail] = useState(true);
-    const [isValidName, setIsValidName] = useState(true);
+    const [isValidLicense, setIsValidLicense] = useState(true);
     const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
     const [result, setResult] = useState(undefined);
@@ -49,7 +50,8 @@ function ReferralSignupForm() {
 
     const [emailMessage, setEmailMessage] = useState("");
     const [phoneMessage, setPhoneMessage] = useState("");
-    const [nameMessage, setNameMessage] = useState("");
+    const [licenseMessage, setLicenseMessage] = useState("");
+
 
     const validateEmail = (email) => {
         let emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
@@ -76,15 +78,15 @@ function ReferralSignupForm() {
     };
 
 
-    const validateName = (name) => {
-        let nameValidation = /^[a-zA-Z]{2,40} [a-zA-Z]{2,40}$/;
-        if (!nameValidation.test(name)) {
-            setNameMessage("Error! Please enter a valid name");
-            setIsValidName(false);
+    const validateLicense = (licensePlate) => {
+        let licenseValidation = /^[a-zA-Z0-9]{3,10}$/;
+        if (!licenseValidation.test(licensePlate)) {
+            setLicenseMessage("Error! Please enter a valid license");
+            setIsValidLicense(false);
             return;
         } else {
-            setNameMessage("");
-            setIsValidName(true);
+            setLicenseMessage("");
+            setIsValidLicense(true);
         }
     };
 
@@ -100,16 +102,16 @@ function ReferralSignupForm() {
                 return false;
             }
         }
-        if (name.trim() !== '') {
-            validateName(name);
-            if (!isValidName) {
-                console.error('Name validation failed.');
+        if (licensePlate.trim() !== '') {
+            validateLicense(licensePlate);
+            if (!isValidLicense) {
+                console.error('License validation failed.');
                 return false;
             }
         }
 
-        if (!isValidName) {
-            console.error('Invalid name')
+        if (!isValidLicense) {
+            console.error('Invalid license')
             return false;
         }
 
@@ -186,10 +188,10 @@ function ReferralSignupForm() {
     const handleSelect = async (value) => {
         const results = await geocodeByAddress(value);
         console.log(results);
-        const ll = await getLatLng(results[0]);
-        console.log(ll);
+        const { lat, lng } = await getLatLng(results[0]);
+        console.log({ lat, lng });
         setAddress(value);
-        setCoordinates(ll);
+        setCoordinates({ lat, lng });
     };
 
     if (loadError) {
@@ -321,6 +323,7 @@ function ReferralSignupForm() {
                                 value={licensePlate}
                                 onChange={(e) => setLicensePlate(e.target.value)}
                             />
+                            {!isValidLicense && <p>{licenseMessage}</p>}
                         </div>
                         <br />
                         <div className="form-group">
@@ -380,7 +383,6 @@ function ReferralSignupForm() {
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                             />
-                            {!isValidName && <p>{nameMessage}</p>}
                         </div>
                         <br />
                         <div className="form-group">
@@ -400,10 +402,25 @@ function ReferralSignupForm() {
                 </Col>
             </Row>
             </form>
+            <div>
+        {/* Your map component */}
+        <GoogleMap
+            id="map"
+            mapContainerStyle={{ width: "100%", height: "400px" }}
+            zoom={8}
+            center={{ lat: 42.361145, lng: -71.057083}}
+        >
+            {coordinates.lat !== null && coordinates.lng !== null && <Marker position={{lat:coordinates.lat, lng:coordinates.lng}}/>}
+            {/* Your map content, markers, etc. */}
+        </GoogleMap>
+        </div>
+
         </Container>
     </section>
 );
 }
+ // Define the libraries you want to use
+
 
 
 export default ReferralSignupForm;
